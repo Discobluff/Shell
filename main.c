@@ -8,7 +8,7 @@ int main(void)
 	char input[MAX_INPUT_SIZE];
 	printf("> ");
 
-	while(scanf("%s", input) != EOF) { 
+	while(fgets(input, MAX_INPUT_SIZE, stdin) != NULL) { 
 		printf("%s\n> ", input);
 		system(input);
 	}

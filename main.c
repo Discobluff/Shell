@@ -10,6 +10,7 @@ int main(void)
 
 	while(scanf("%s", input) != EOF) { 
 		printf("%s\n> ", input);
+		system(input);
 	}
 
 	printf("\n");

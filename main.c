@@ -8,9 +8,9 @@ int main(void)
 	char input[MAX_INPUT_SIZE];
 	printf("> ");
 
-	do { 
+	while(scanf("%s", input) != EOF) { 
 		printf("%s\n> ", input);
-	} while(scanf("%s", input) != EOF);
+	}
 
 	printf("\n");
 

@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "runner/runner.h"
+#include "runner.h"
 #include "parser/parser.h"
 
 

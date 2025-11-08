@@ -26,7 +26,38 @@ const function builtin_func[] = {
 
 const function generic = {.type = with_arg, .fun.with_arg = * generic_fun};
 
-size_t builtin_number(void)
+
+inline size_t builtin_number(void)
 {
 	return sizeof(builtin_str) / sizeof(char *);
+}
+
+static void builtin_runner(function fun, char** args)
+{
+	switch (fun.type)
+	{
+	case no_arg:
+		if (fun.fun.no_arg() == -1) {
+			fprintf(stderr, "error in child\n");
+		}
+		break;
+	case with_arg:
+		if (fun.fun.with_arg(args) == -1) {
+			fprintf(stderr, "error in child\n");
+		}
+		break;
+	}
+	// if we return from fun.fun then we have failed 
+	exit(EXIT_FAILURE);
+}
+
+// handles the function call to args[0], builtin or generic
+void function_handler(char** args)
+{
+	for (unsigned long j = 0; j < builtin_number(); j++) {
+		if (strcmp(args[0], builtin_str[j]) == 0) {
+			builtin_runner(builtin_func[j], args);
+		}
+	}
+	builtin_runner(generic, args); // default to generic if not a builtin
 }

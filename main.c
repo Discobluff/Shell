@@ -3,7 +3,6 @@
 #include "runner/runner.h"
 #include "parser/parser.h"
 
-#define MAX_INPUT_SIZE 100
 
 int main(void)
 {

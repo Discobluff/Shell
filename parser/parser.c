@@ -7,7 +7,7 @@ char** split_to_args(char *line)
 	char* token;
 
 	if (!tokens) {
-		fprintf(stderr, "shell: allocation error\n");
+		perror("shell: allocation error\n");
 		exit(EXIT_FAILURE);
   	}
 
@@ -20,7 +20,7 @@ char** split_to_args(char *line)
 			bufsize += TOKEN_BUFSIZE;
 			tokens = realloc(tokens, bufsize * sizeof(char*));
 			if (!tokens) {
-				fprintf(stderr, "shell: allocation error\n");
+				perror("shell: allocation error\n");
 				exit(EXIT_FAILURE);
 			}
 		}
@@ -43,7 +43,7 @@ char* get_line(void)
 			printf("\n");
 			exit(EXIT_SUCCESS);
 		} else  {
-			fprintf(stderr, "readline");
+			perror("readline");
 			exit(EXIT_FAILURE);
 		}
 	}

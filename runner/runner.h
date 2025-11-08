@@ -9,6 +9,14 @@
 
 #include <stdio.h>
 
-int run(char** args);
+#define MAX_ARG_SIZE 32
+
+typedef struct {
+	char** args;
+	int argc;
+} command_t;
+
+
+int run(char** line);
 
 #endif

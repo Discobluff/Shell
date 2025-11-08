@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 typedef struct {
 	enum {with_arg, no_arg} type;
@@ -46,7 +47,7 @@ extern const function builtin_func[];
  */
 extern const function generic;
 
-
+void function_handler(char** args);
 size_t builtin_number(void);
 
 #endif

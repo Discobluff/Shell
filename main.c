@@ -1,20 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include "runner/runner.h"
+#include "parser/parser.h"
 
 #define MAX_INPUT_SIZE 100
 
 int main(void)
 {
-	char input[MAX_INPUT_SIZE];
-	printf("> ");
-	while (fgets(input, MAX_INPUT_SIZE, stdin) != NULL) {
-		input[strcspn(input, "\n")] = '\0';
-		printf("> ");
-		system(input);
-	}
+	char* input;
+	char** args;
+	int status = 1;
 
-	printf("\n");
+	do { 
+		printf("> ");
+
+		input = get_line();
+		args = split_to_args(input);
+		
+		status = run(args);
+
+		free(input); free(args);
+	} while(status);
 
 	return 0;
 }

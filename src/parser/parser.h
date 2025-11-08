@@ -11,6 +11,11 @@
 #define TOKEN_BUFSIZE 64
 #define TOKEN_DELIM " \t\r\n\a"
 
+typedef struct {
+	char** args;
+	int argc;
+} command_t;
+
 char** split_to_args(char* input);
 char* get_line(void);
 

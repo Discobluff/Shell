@@ -27,7 +27,7 @@ const function builtin_func[] = {
 const function generic = {.type = with_arg, .fun.with_arg = * generic_fun};
 
 
-inline size_t builtin_number(void)
+static inline size_t builtin_number(void)
 {
 	return sizeof(builtin_str) / sizeof(char *);
 }

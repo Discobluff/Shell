@@ -3,12 +3,17 @@
 #include "runner.h"
 #include "parser/parser.h"
 
+int debug = 0;
 
-int main(void)
+int main(int argc, char** argv)
 {
 	char* input;
 	char** args;
 	int status = 1;
+
+	if (argc > 1 && strcmp(argv[1], "--debug") == 0) {
+		debug = 1;
+	}
 
 	do { 
 		printf("> ");

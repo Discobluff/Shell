@@ -48,6 +48,5 @@ extern const function builtin_func[];
 extern const function generic;
 
 void function_handler(char** args);
-size_t builtin_number(void);
 
 #endif

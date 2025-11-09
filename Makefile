@@ -32,6 +32,9 @@ clean:
 run: rebuild 
 	@./$(TARGET)
 
+test: rebuild
+	@./$(TARGET) --debug
+
 rebuild: clean all
 
-.PHONY: all clean rebuild run
+.PHONY: all clean rebuild run test

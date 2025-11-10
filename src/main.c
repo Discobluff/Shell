@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 	char computer_name[MAX_NAME_SIZE];
 	int fd = open("/etc/hostname", O_RDONLY);
 	int size = read(fd, computer_name, MAX_ARG_SIZE);
-
+	close(fd);
 	if (size > 0) computer_name[size - 1] = ' ';
 
 	do { 

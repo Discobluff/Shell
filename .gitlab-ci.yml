@@ -1,9 +1,14 @@
 variables:
   BUILD: "false"
 
+default:
+  image: gibson-registry.telecomnancy.univ-lorraine.fr/projets/2526/systeme/projet/projet-systeme-groupe-30
+
 stages:
   - image-build
   - compilation
+  - tests_generic
+  - tests_custom
 
 build:
   stage: image-build
@@ -27,3 +32,11 @@ compile:
   artifacts:
     paths:
       - main
+
+myps:
+  stage: tests_custom
+  rules:
+    - if: $BUILD == "false"
+  script:
+    - ./main
+    - myps

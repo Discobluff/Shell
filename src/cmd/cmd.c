@@ -21,7 +21,7 @@ const function builtin_func[] = {
 	[4] = (function) {.type = no_arg, .fun.no_arg = *myexe},
 
 	// with args
-	[5] = (function) {.type = no_arg, .fun.with_arg = *myenv},
+	[5] = (function) {.type = with_arg, .fun.with_arg = *myenv},
 };
 
 const function generic = {.type = with_arg, .fun.with_arg = * generic_fun};

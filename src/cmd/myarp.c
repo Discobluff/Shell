@@ -2,7 +2,7 @@
 
 static char* args[] =
 {
-	"arm", "-n", NULL,
+	"arp", "-n", NULL,
 };
 
 int myarp(void)

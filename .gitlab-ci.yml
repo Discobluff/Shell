@@ -46,6 +46,21 @@ myps:
   variables:
     CMD: "myps"
 
+mypstree:
+  extends: .template_custom_without_args
+  variables:
+    CMD: "mypstree"
+
+mynetstat:
+  extends: .template_custom_without_args
+  variables:
+    CMD: "mynetstat"
+
+myarp:
+  extends: .template_custom_without_args
+  variables:
+    CMD: "myarp"
+
 .template_generic:
   stage: tests_generic
   rules:

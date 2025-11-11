@@ -38,6 +38,7 @@ myps:
   rules:
     - if: $BUILD == "false"
   script:
-    - ./main <<EOF
-myps
-EOF
+    - |
+      ./main <<EOF
+      myps
+      EOF

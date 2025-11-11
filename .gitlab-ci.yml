@@ -41,20 +41,26 @@ compile:
   script:
     - echo "$CMD" | ./main
 
-myps:
-  extends: .template_custom_without_args
-  variables:
-    CMD: "myps"
-
 mypstree:
   extends: .template_custom_without_args
   variables:
     CMD: "mypstree"
 
-mynetstat:
+myps:
   extends: .template_custom_without_args
   variables:
-    CMD: "mynetstat"
+    CMD: "myps"
+
+
+mynetstat:
+  # extends: .template_custom_without_args
+  # variables:
+  #   CMD: "mynetstat"
+  stage: tests_custom_without_args
+  rules:
+    - if: '$BUILD == "false"'
+  script:
+    - echo "mynetstat" | ./main
 
 myarp:
   extends: .template_custom_without_args

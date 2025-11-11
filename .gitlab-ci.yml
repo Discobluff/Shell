@@ -1,0 +1,29 @@
+variables:
+  BUILD: "false"
+
+stages:
+  - image-build
+  - compilation
+
+build:
+  stage: image-build
+  rules:
+    - if: $BUILD == "true"
+  image:
+    name: gcr.io/kaniko-project/executor:v1.23.2-debug
+    entrypoint: [""]
+  script:
+    - /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --destination "${CI_REGISTRY_IMAGE}"
+
+compile:  
+  stage: compilation
+  rules:
+    - if: $BUILD == "false"  
+  script:
+    - make all
+  artifacts:
+    paths:
+      - main

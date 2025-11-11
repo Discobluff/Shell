@@ -38,5 +38,4 @@ myps:
   rules:
     - if: $BUILD == "false"
   script:
-    - ./main
-    - myps
+    - echo "myps" | ./main

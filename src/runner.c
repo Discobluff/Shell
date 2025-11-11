@@ -179,6 +179,10 @@ int run(char** line)
 		return 1;
 	}
 
+	if (strcmp("fin", line[0]) == 0 && line[1] == NULL){
+		return 0;
+	}
+
 	command_t* commands;
 	
 	int cmd_count = parse_pipeline(line, &commands);

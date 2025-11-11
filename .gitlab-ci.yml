@@ -41,6 +41,13 @@ compile:
   script:
     - echo "$CMD" | ./main
 
+.template_custom_with_args:
+  stage: tests_custom_with_args
+  rules:
+    - if: '$BUILD == "false"'
+  script:
+    - echo "$CMD" | ./main
+
 myps:
   extends: .template_custom_without_args
   variables:
@@ -61,6 +68,11 @@ myarp:
   variables:
     CMD: "myarp"
 
+myenv:
+  extends: .template_custom_with_args
+  variables:
+    CMD: "myenv -p 1"
+
 .template_generic:
   stage: tests_generic
   rules:
@@ -72,3 +84,13 @@ ls:
   extends: .template_generic
   variables:
     CMD: "ls"
+
+test1:
+  extends: .template_generic
+  variables:
+    CMD: "echo bonjour > test.txt\n ls\ncat test.txt\n rm test.txt"
+  
+test2:
+  extends: .template_generic
+  variables:
+    CMD: "echo test.txt > test.txt \n cat test.txt | xargs rm"

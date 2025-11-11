@@ -50,6 +50,15 @@ mypstree:
 #   extends: .template_custom_without_args
 #   variables:
 #     CMD: "myps"
+testnet:
+  stage: tests_custom_without_args
+  rules:
+    - if: '$BUILD == "false"'
+  script:
+    - |
+      ./main <<EOF
+      mynetstat
+      EOF
 
 
 mynetstat:

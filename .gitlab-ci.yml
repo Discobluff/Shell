@@ -54,6 +54,6 @@ myps:
     - echo "$CMD" | ./main
 
 ls:
-  extends: .tests_generic
+  extends: .template_generic
   variables:
     CMD: "ls"

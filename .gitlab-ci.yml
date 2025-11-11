@@ -8,7 +8,8 @@ stages:
   - image-build
   - compilation
   - tests_generic
-  - tests_custom
+  - tests_custom_without_args
+  - tests_custom_with_args
 
 build:
   stage: image-build
@@ -33,12 +34,29 @@ compile:
     paths:
       - main
 
-myps:
-  stage: tests_custom
+.template_custom_without_args:
+  stage: tests_custom_without_args
   rules:
-    - if: $BUILD == "false"
+    - if: '$BUILD == "false"'
   script:
-    - |
-      ./main <<EOF
-      myps
-      EOF
+    - echo "$CMD" | ./main
+
+myps:
+  extends: .template_custom_without_args
+  variables:
+    CMD: "myps"
+
+mypstree:
+  extends: .template_custom_without_args
+  variables:
+    CMD: "mypstree"
+
+mynetstat:
+  extends: .template_custom_without_args
+  variables:
+    CMD: "mynetstat"
+
+myarp:
+  extends: .template_custom_without_args
+  variables:
+    CMD: "myarp"

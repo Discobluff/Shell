@@ -46,10 +46,10 @@ mypstree:
   variables:
     CMD: "mypstree"
 
-myps:
-  extends: .template_custom_without_args
-  variables:
-    CMD: "myps"
+# myps:
+#   extends: .template_custom_without_args
+#   variables:
+#     CMD: "myps"
 
 
 mynetstat:

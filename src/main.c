@@ -25,8 +25,10 @@ int main(int argc, char** argv)
 
 	do { 
 		printf("\033[31m%s\033[m> ", computer_name); fflush(stdout);
-
 		input = get_line();
+
+		if (!isatty(STDIN_FILENO)) printf("%s", input);
+		
 		args = split_to_args(input);
 
 		status = run(args);

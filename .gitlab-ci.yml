@@ -1,9 +1,15 @@
 variables:
   BUILD: "false"
 
+default:
+  image: gibson-registry.telecomnancy.univ-lorraine.fr/projets/2526/systeme/projet/projet-systeme-groupe-30
+
 stages:
   - image-build
   - compilation
+  - tests_generic
+  - tests_custom_without_args
+  - tests_custom_with_args
 
 build:
   stage: image-build
@@ -27,3 +33,64 @@ compile:
   artifacts:
     paths:
       - main
+
+.template_custom_without_args:
+  stage: tests_custom_without_args
+  rules:
+    - if: '$BUILD == "false"'
+  script:
+    - echo "$CMD" | ./main
+
+.template_custom_with_args:
+  stage: tests_custom_with_args
+  rules:
+    - if: '$BUILD == "false"'
+  script:
+    - echo "$CMD" | ./main
+
+myps:
+  extends: .template_custom_without_args
+  variables:
+    CMD: "myps"
+
+mypstree:
+  extends: .template_custom_without_args
+  variables:
+    CMD: "mypstree"
+
+mynetstat:
+  extends: .template_custom_without_args
+  variables:
+    CMD: "mynetstat"
+
+myarp:
+  extends: .template_custom_without_args
+  variables:
+    CMD: "myarp"
+
+myenv:
+  extends: .template_custom_with_args
+  variables:
+    CMD: "myenv -p 1"
+
+.template_generic:
+  stage: tests_generic
+  rules:
+    - if: '$BUILD == "false"'
+  script:
+    - echo "$CMD" | ./main
+
+ls:
+  extends: .template_generic
+  variables:
+    CMD: "ls"
+
+test1:
+  extends: .template_generic
+  variables:
+    CMD: "echo bonjour > test.txt\n ls\ncat test.txt\n rm test.txt"
+  
+test2:
+  extends: .template_generic
+  variables:
+    CMD: "echo test.txt > test.txt \n cat test.txt | xargs rm"

@@ -39,5 +39,5 @@ myps:
     - if: $BUILD == "false"
   script:
     - ./main <<EOF
-      myps
-      EOF
+myps
+EOF

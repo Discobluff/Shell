@@ -58,7 +58,24 @@ static int execute_pipeline(command_t* commands, int cmd_count)
 				close(fd_err);
 			}
 
-			function_handler(commands[0].args);
+			//job control
+			int len = 0;
+			for (len; commands[0].args[len] != NULL; len++);
+
+			if (strcmp(commands[0].args[len - 1], "&") == 0) {
+				commands[0].args[len - 1] = NULL;
+				// run in background
+				if(fork() == 0){
+					function_handler(commands[0].args);
+				} else {
+					exit(EXIT_SUCCESS);
+				}
+			}
+
+			else {
+				function_handler(commands[0].args);
+			}
+
 
 		} else if (pid < 0) {
 			fprintf(stderr, "error forking\n");

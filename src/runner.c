@@ -1,6 +1,7 @@
 #include "runner.h"
 #include "cmd/cmd.h"
 #include "parser/parser.h"
+#include "cmd/job.h"
 
 // execute the commands as they come with pipe chaining
 static int execute_pipeline(command_t* commands, int cmd_count)

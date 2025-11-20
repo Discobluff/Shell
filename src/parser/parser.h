@@ -6,12 +6,17 @@
 #include <sys/types.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <unistd.h>
 
 #include <stdio.h>
 #include <limits.h>
 
 #define TOKEN_BUFSIZE 64
 #define TOKEN_DELIM " \t\r\n\a"
+
+
+extern int debug;
+
 
 typedef struct {
 	char** args;		// Arguments de la commande

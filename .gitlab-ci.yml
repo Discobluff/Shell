@@ -98,4 +98,4 @@ test2:
 cd:
   extends: .template_generic
   variables:
-    CMD: "cd src | pwd"
+    CMD: "cd src \n pwd"

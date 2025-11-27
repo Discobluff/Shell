@@ -21,14 +21,14 @@ static int execute_pipeline(command_t* commands, int cmd_count)
 			fd_out = open(commands[0].output_file, flags, 0644);
 		}
 		if (commands[0].input_file != NULL){
-			fd_in= open(commands[0].input_file, O_RDONLY);
+			fd_in = open(commands[0].input_file, O_RDONLY, 0644);
 			if (fd_in == -1){
 				fprintf(stderr, "could not open file: \"%s\"\n", commands[0].input_file);
 				exit(EXIT_FAILURE);
 			}
 		}
 		if (commands[0].error_file != NULL){
-			fd_err = open(commands[0].error_file, O_WRONLY | O_CREAT | O_TRUNC);
+			fd_err = open(commands[0].error_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		}
 
 		if (!commands[0].need_fork){

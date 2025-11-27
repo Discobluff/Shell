@@ -3,7 +3,10 @@
 #include "runner.h"
 #include "parser/parser.h"
 
+#define MAX_USER_SIZE 32
 #define MAX_NAME_SIZE 32
+
+extern char** environ;
 
 int debug = 0;
 
@@ -17,11 +20,28 @@ int main(int argc, char** argv)
 		debug = 1;
 	}
 
-	char computer_name[MAX_NAME_SIZE];
-	int fd = open("/etc/hostname", O_RDONLY);
-	int size = read(fd, computer_name, MAX_ARG_SIZE);
-	close(fd);
-	if (size > 0) computer_name[size - 1] = ' ';
+	char user[MAX_USER_SIZE],
+		 name[MAX_NAME_SIZE],
+		 computer_name[MAX_USER_SIZE + MAX_NAME_SIZE + 2];
+
+	int i = 0;
+	int has_name = 0;
+	while(environ[i]) {
+		if (strncmp(environ[i], "USER", 4) == 0)
+			strncpy(user, environ[i]+5, MAX_USER_SIZE);
+		else if (strncmp(environ[i], "NAME", 4) == 0) {
+			strncpy(name, environ[i]+5, MAX_NAME_SIZE);
+			has_name = 1;
+		}
+		i++;
+	}
+
+	if (has_name) {
+		snprintf(computer_name, MAX_USER_SIZE + MAX_NAME_SIZE + 1, "%s@%s ", user, name);
+	}
+	else {
+		snprintf(computer_name, MAX_USER_SIZE + 1, "%s ", user);
+	}
 
 	do { 
 		printf("\033[31m%s\033[m> ", computer_name); fflush(stdout);

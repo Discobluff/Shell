@@ -17,18 +17,18 @@ const char* builtin_str[] = {
 
 const function builtin_func[] = {
 	// without args
-	[0] = (function) {.type = no_arg, .fun.no_arg = *myps},
-	[1] = (function) {.type = no_arg, .fun.no_arg = *mypstree},
-	[2] = (function) {.type = no_arg, .fun.no_arg = *mynetstat},
-	[3] = (function) {.type = no_arg, .fun.no_arg = *myarp},
-	[4] = (function) {.type = no_arg, .fun.no_arg = *myexe},
+	[0] = (function) {.type = no_arg, .fun.no_arg = myps},
+	[1] = (function) {.type = no_arg, .fun.no_arg = mypstree},
+	[2] = (function) {.type = no_arg, .fun.no_arg = mynetstat},
+	[3] = (function) {.type = no_arg, .fun.no_arg = myarp},
+	[4] = (function) {.type = no_arg, .fun.no_arg = myexe},
 
 	// with args
-	[5] = (function) {.type = with_arg, .fun.with_arg = *myenv},
-	[6] = (function) {.type = with_arg, .fun.with_arg = *cd},
+	[5] = (function) {.type = with_arg, .fun.with_arg = myenv},
+	[6] = (function) {.type = with_arg, .fun.with_arg = cd},
 };
 
-const function generic = {.type = with_arg, .fun.with_arg = * generic_fun};
+const function generic = {.type = with_arg, .fun.with_arg = generic_fun};
 
 
 static inline size_t builtin_number(void)
@@ -68,4 +68,8 @@ void function_handler(char** args, bool exit_fork)
 	if (!standart_func){
 		builtin_runner(generic, args, exit_fork); // default to generic if not a builtin
 	}
+}
+	// the generic is the only one that may have this problem...
+	if (generic.fun.with_arg(args) == -1) fprintf(stderr, "shell: %s: function does not exist\n", args[0]);
+	exit(EXIT_FAILURE);
 }

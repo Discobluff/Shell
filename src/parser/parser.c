@@ -50,6 +50,8 @@ char* get_line(void)
 	return line;
 }
 
+
+
 static void init_command(command_t* cmd)
 {
 	cmd->args = NULL;
@@ -59,6 +61,31 @@ static void init_command(command_t* cmd)
 	cmd->error_file = NULL;
 	cmd->need_fork = true;
 }
+
+
+static char* expand_variable(const char* token)
+{
+	const char* var_name = token + 1; // go past the '$'
+
+	// special variables $? / $$ ...
+	if (*var_name == '$') {
+		static char buf[16];
+		snprintf(buf, sizeof(buf), "%d", getpid());
+		return strdup(buf);
+	}
+	else if (!isalnum(*var_name)) {
+		fprintf(stderr, "oops this is not implemented yet... (only done $VAR and $$)\n");
+		return NULL; 
+	}
+
+	char* value = getenv(var_name);
+	if (value) {
+		return strdup(value);
+	}
+
+	return strdup("");
+}
+
 
 // returns the number of commands separated by pipes and puts them in commands
 int parse_pipeline(char** line, command_t** commands)
@@ -96,10 +123,10 @@ int parse_pipeline(char** line, command_t** commands)
 		int j = start;
 		
 		while (j < end) {
-			if (strcmp(line[j], "<") == 0 || 
-				strcmp(line[j], ">") == 0 || 
-				strcmp(line[j], ">>") == 0 ||
-				strcmp(line[j], "2>") == 0) {
+			if (strcmp(line[j], "<") == 0
+				 || strcmp(line[j], ">") == 0
+				 || strcmp(line[j], ">>") == 0
+				 || strcmp(line[j], "2>") == 0) {
 				j += 2;
 			} else {
 				arg_count++;
@@ -120,6 +147,8 @@ int parse_pipeline(char** line, command_t** commands)
 			if (strcmp(line[j], "cd") == 0){
 				(*commands)[cmd_idx].need_fork = false;
 			}
+			if (debug) printf("on token %s\n", line[j]);
+
 			if (strcmp(line[j], "<") == 0) {
 				if (j + 1 < end && line[j + 1] != NULL) {
 					(*commands)[cmd_idx].input_file = line[j + 1];
@@ -158,8 +187,17 @@ int parse_pipeline(char** line, command_t** commands)
 					j++;
 				}
 			}
+			else if (strstr(line[j], "$")) {
+				args[arg_idx++] = expand_variable(line[j]);
+				if (debug) printf("\t> command[%d] arg %d = '%s' (to expand)\n", cmd_idx, arg_idx - 1, line[j]);
+				j++;
+			}
+			else if (strcmp(line[j], "$(") == 0) {
+				fprintf(stderr, "comming soon!\n");
+			}
 			else {
 				args[arg_idx++] = line[j];
+				if (debug) printf("\t> command[%d] arg %d = '%s'\n", cmd_idx, arg_idx - 1, line[j]);
 				j++;
 			}
 		}

@@ -14,6 +14,7 @@ int main(int argc, char** argv)
 {
 	char* input;
 	char** args;
+	char path[1024];
 	int status = 1;
 
 	if (argc > 1 && strcmp(argv[1], "--debug") == 0) {
@@ -37,14 +38,15 @@ int main(int argc, char** argv)
 	}
 
 	if (has_name) {
-		snprintf(computer_name, MAX_USER_SIZE + MAX_NAME_SIZE + 1, "%s@%s ", user, name);
+		snprintf(computer_name, MAX_USER_SIZE + MAX_NAME_SIZE + 1, "%s@%s:", user, name);
 	}
 	else {
-		snprintf(computer_name, MAX_USER_SIZE + 1, "%s ", user);
+		snprintf(computer_name, MAX_USER_SIZE + 1, "%s:", user);
 	}
 
-	do { 
-		printf("\033[31m%s\033[m> ", computer_name); fflush(stdout);
+	do {
+		getcwd(path, sizeof(path));
+		printf("\033[31m%s\033[m\033[32m%s\033[m> ", computer_name, path); fflush(stdout);
 		input = get_line();
 
 		if (!isatty(STDIN_FILENO)) printf("%s", input);

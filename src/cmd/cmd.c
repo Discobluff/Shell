@@ -69,6 +69,8 @@ void function_handler(char** args, bool exit_fork)
 		builtin_runner(generic, args, exit_fork); // default to generic if not a builtin
 	}
 	// the generic is the only one that may have this problem...
-	if (generic.fun.with_arg(args) == -1) fprintf(stderr, "shell: %s: function does not exist\n", args[0]);
-	exit(EXIT_FAILURE);
+	if (exit_fork){
+		if (generic.fun.with_arg(args) == -1) fprintf(stderr, "shell: %s: function does not exist\n", args[0]);
+		exit(EXIT_FAILURE);
+	}
 }

@@ -19,6 +19,7 @@ typedef struct {
 	char* output_file;	// NULL ou nom du fichier pour >
 	bool append;		// 0 pour >, 1 pour >>
 	char* error_file;	// NULL ou nom du fichier pour 2>
+	bool need_fork;
 } command_t;
 
 // functions for command line

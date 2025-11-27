@@ -94,3 +94,8 @@ test2:
   extends: .template_generic
   variables:
     CMD: "echo test.txt > test.txt \n cat test.txt | xargs rm"
+
+cd:
+  extends: .template_generic
+  variables:
+    CMD: "cd src | pwd"

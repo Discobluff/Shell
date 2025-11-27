@@ -57,6 +57,7 @@ static void init_command(command_t* cmd)
 	cmd->output_file = NULL;
 	cmd->append = false;
 	cmd->error_file = NULL;
+	cmd->need_fork = true;
 }
 
 // returns the number of commands separated by pipes and puts them in commands
@@ -116,6 +117,9 @@ int parse_pipeline(char** line, command_t** commands)
 		j = start;
 		
 		while (j < end) {
+			if (strcmp(line[j], "cd") == 0){
+				(*commands)[cmd_idx].need_fork = false;
+			}
 			if (strcmp(line[j], "<") == 0) {
 				if (j + 1 < end && line[j + 1] != NULL) {
 					(*commands)[cmd_idx].input_file = line[j + 1];

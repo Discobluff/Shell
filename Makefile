@@ -12,7 +12,8 @@ SRCS = src/main.c \
        src/cmd/mypstree.c \
        src/cmd/mynetstat.c \
        src/cmd/myarp.c \
-       src/cmd/myexe.c
+       src/cmd/myexe.c \
+       src/cmd/cd.c
 
 OBJS = $(SRCS:.c=.o)
 

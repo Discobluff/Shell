@@ -31,7 +31,12 @@ static int execute_pipeline(command_t* commands, int cmd_count)
 			fd_err = open(commands[0].error_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		}
 
-		pid = fork();
+		if (!commands[0].need_fork){
+			pid = 0;
+		}
+		else{
+			pid = fork();
+		}
 		if (pid == 0) {
 			// Child process
 
@@ -57,8 +62,8 @@ static int execute_pipeline(command_t* commands, int cmd_count)
 				}
 				close(fd_err);
 			}
-
-			function_handler(commands[0].args);
+			function_handler(commands[0].args, commands[0].need_fork);
+			return 1;
 
 		} else if (pid < 0) {
 			fprintf(stderr, "error forking\n");
@@ -83,7 +88,12 @@ static int execute_pipeline(command_t* commands, int cmd_count)
 	}
 
 	for (i = 0; i < cmd_count; i++) {
-		pid = fork();
+		if (!commands[i].need_fork){
+			pid = 0;
+		}
+		else{
+			pid = fork();
+		}
 		if (pid == 0) {
 			// Child process
 
@@ -154,7 +164,7 @@ static int execute_pipeline(command_t* commands, int cmd_count)
 				close(pipefds[j]);
 
 			// handle the function
-			function_handler(commands[i].args);
+			function_handler(commands[i].args, commands[i].need_fork);
 			
 		} else if (pid < 0) {
 			fprintf(stderr, "fork");
@@ -177,6 +187,10 @@ int run(char** line)
 	if (line[0] == NULL) {
 		// An empty command ?
 		return 1;
+	}
+
+	if (strcmp("fin", line[0]) == 0 && line[1] == NULL){
+		return 0;
 	}
 
 	command_t* commands;

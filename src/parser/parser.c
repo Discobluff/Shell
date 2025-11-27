@@ -59,6 +59,7 @@ static void init_command(command_t* cmd)
 	cmd->output_file = NULL;
 	cmd->append = false;
 	cmd->error_file = NULL;
+	cmd->need_fork = true;
 }
 
 
@@ -143,6 +144,9 @@ int parse_pipeline(char** line, command_t** commands)
 		j = start;
 		
 		while (j < end) {
+			if (strcmp(line[j], "cd") == 0){
+				(*commands)[cmd_idx].need_fork = false;
+			}
 			if (debug) printf("on token %s\n", line[j]);
 
 			if (strcmp(line[j], "<") == 0) {

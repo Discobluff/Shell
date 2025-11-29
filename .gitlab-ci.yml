@@ -39,14 +39,14 @@ compile:
   rules:
     - if: '$BUILD == "false"'
   script:
-    - echo "$CMD" | ./main
+    - echo "$CMD" | make run
 
 .template_custom_with_args:
   stage: tests_custom_with_args
   rules:
     - if: '$BUILD == "false"'
   script:
-    - echo "$CMD" | ./main
+    - echo "$CMD" | make run
 
 myps:
   extends: .template_custom_without_args
@@ -78,7 +78,7 @@ myenv:
   rules:
     - if: '$BUILD == "false"'
   script:
-    - echo "$CMD" | ./main
+    - echo "$CMD" | make run
 
 ls:
   extends: .template_generic

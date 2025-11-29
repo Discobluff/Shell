@@ -78,7 +78,7 @@ myenv:
   rules:
     - if: '$BUILD == "false"'
   script:
-    - echo "$CMD" | make run
+    - make run <<< "$CMD"
 
 ls:
   extends: .template_generic
@@ -88,12 +88,12 @@ ls:
 test1:
   extends: .template_generic
   variables:
-    CMD: "echo bonjour > test.txt\n ls\ncat test.txt\n rm test.txt"
+    CMD: "echo bonjour > test.txt\nls\ncat test.txt\n rm test.txt"
   
 test2:
   extends: .template_generic
   variables:
-    CMD: "echo test.txt > test.txt \n cat test.txt | xargs rm"
+    CMD: "echo test.txt > test.txt \ncat test.txt | xargs rm"
 
 test;:
   extends: .template_generic
@@ -103,4 +103,4 @@ test;:
 cd:
   extends: .template_generic
   variables:
-    CMD: "cd src \n pwd"
+    CMD: "cd src \npwd"

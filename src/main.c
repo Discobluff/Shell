@@ -13,7 +13,6 @@ int debug = 0;
 int main(int argc, char** argv)
 {
 	char* input;
-	// char** args;
 	char path[1024];
 	int status = 1;
 
@@ -49,7 +48,7 @@ int main(int argc, char** argv)
 		printf("\033[31m%s\033[m\033[32m%s\033[m > ", computer_name, path); fflush(stdout);
 		input = get_line();
 
-		if (!isatty(STDIN_FILENO)) printf("%s", input);
+		if (!isatty(STDIN_FILENO)) {printf("%s\n", input); fflush(stdout);}
 		
 		char ***args_list;
 		int count_cmd = split_to_args_list(input, &args_list);

@@ -1,34 +1,59 @@
 #include "parser.h"
 
-char** split_to_args(char *line)
-{
-	int bufsize = TOKEN_BUFSIZE, position = 0;
-	char** tokens = malloc(bufsize * sizeof(char*));
-	char* token;
+int split_to_args_list(char *line, char ****args_list){
+	int cmd_count = 0;
+	int i = 0;
 
-	if (!tokens) {
+	// Compter le nombre de commandes (nombre de pipes + 1)
+	while (line[i] != '\0') {
+		if (line[i] == ';') {
+			cmd_count++;
+		}
+		i++;
+	}
+	cmd_count++;
+	char ***res = malloc(sizeof(char**)*cmd_count);
+	if (!res){
 		perror("shell: allocation error\n");
 		exit(EXIT_FAILURE);
-  	}
-
-	token = strtok(line, TOKEN_DELIM);
-	while (token != NULL) {
-		tokens[position] = token;
-		position++;
-
-		if (position >= bufsize) {
-			bufsize += TOKEN_BUFSIZE;
-			tokens = realloc(tokens, bufsize * sizeof(char*));
-			if (!tokens) {
-				perror("shell: allocation error\n");
-				exit(EXIT_FAILURE);
-			}
-		}
-
-		token = strtok(NULL, TOKEN_DELIM);
 	}
-	tokens[position] = NULL;
-	return tokens;
+	int index_args = 0;
+	char *savePointer;
+	char *currentCommand = strtok_r(line,TOKEN_SEP, &savePointer);
+
+	while (index_args < cmd_count){
+		int bufsize = TOKEN_BUFSIZE, position = 0;
+		char** tokens = malloc(bufsize * sizeof(char*));
+		char* token;
+		if (!tokens) {
+			perror("shell: allocation error\n");
+			exit(EXIT_FAILURE);
+		  }
+		
+		token = strtok(currentCommand, TOKEN_DELIM);
+		while (token != NULL) {
+			// printf("%d %s\n",index_args, token);
+			tokens[position] = token;
+			position++;
+	
+			if (position >= bufsize) {
+				bufsize += TOKEN_BUFSIZE;
+				tokens = realloc(tokens, bufsize * sizeof(char*));
+				if (!tokens) {
+					perror("shell: allocation error\n");
+					exit(EXIT_FAILURE);
+				}
+			}
+	
+			token = strtok(NULL, TOKEN_DELIM);
+		}
+		tokens[position] = NULL;
+		res[index_args] = tokens;
+		index_args ++;
+		currentCommand = strtok_r(NULL, TOKEN_SEP, &savePointer);
+	}
+	*args_list = res;
+	return cmd_count;
 }
 
 // gets line from stdin & ends program when EOF is encountered

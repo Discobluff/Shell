@@ -13,7 +13,7 @@
 
 #define TOKEN_BUFSIZE 64
 #define TOKEN_DELIM " \t\r\n\a"
-
+#define TOKEN_SEP ";"
 
 extern int debug;
 
@@ -28,7 +28,7 @@ typedef struct {
 } command_t;
 
 // functions for command line
-char** split_to_args(char* input);
+int split_to_args_list(char *line, char ****args_list);
 char* get_line(void);
 
 // parser for runners

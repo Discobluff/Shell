@@ -13,7 +13,7 @@ int debug = 0;
 int main(int argc, char** argv)
 {
 	char* input;
-	char** args;
+	// char** args;
 	char path[1024];
 	int status = 1;
 
@@ -46,16 +46,19 @@ int main(int argc, char** argv)
 
 	do {
 		getcwd(path, sizeof(path));
-		printf("\033[31m%s\033[m\033[32m%s\033[m> ", computer_name, path); fflush(stdout);
+		printf("\033[31m%s\033[m\033[32m%s\033[m > ", computer_name, path); fflush(stdout);
 		input = get_line();
 
 		if (!isatty(STDIN_FILENO)) printf("%s", input);
 		
-		args = split_to_args(input);
+		char ***args_list;
+		int count_cmd = split_to_args_list(input, &args_list);
+		for (int i=0;i<count_cmd;i++){
+			status = run(args_list[i]);
+			free(args_list[i]);
+		}
 
-		status = run(args);
-
-		free(input); free(args);
+		free(input); free(args_list);
 	} while(status);
 
 	return 0;

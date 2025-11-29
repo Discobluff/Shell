@@ -95,6 +95,11 @@ test2:
   variables:
     CMD: "echo test.txt > test.txt \n cat test.txt | xargs rm"
 
+test;:
+  extends: .template_generic
+  variables:
+    CMD: "ls ; echo bonjour"
+
 cd:
   extends: .template_generic
   variables:

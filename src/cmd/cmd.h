@@ -24,12 +24,15 @@ int mypstree(void);
 int mynetstat(void);
 int myarp(void);
 int myexe(void);
+int myinfo(void);
 
 /**
  * fork-executed functions that take arguments
  */
 int myenv(char** args);
 int cd(char ** args);
+int mymaps(char** args);
+int mydump(char ** args);
 
 /* ls, grep, etc */
 int generic_fun(char** args);

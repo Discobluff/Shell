@@ -64,15 +64,23 @@ int main(int argc, char** argv)
 		char ***args_list;
 		ActionCond *actionsCond;
 		int count_cmd = split_to_args_list(input, &args_list, &actionsCond);
-		for (int i=0;i<count_cmd;i++){
+		for (int i=0;i<count_cmd;){
+			errno = 0;
 			status = run(args_list[i]);
 			free_args(args_list[i]);
-			if (i != count_cmd-1 && ((!errno && actionsCond[i] == COND_OR) || (errno && actionsCond[i] == COND_AND))){
-				for (int j=i+1;j<count_cmd;j++){
-					free_args(args_list[j]);
-				}
-				break;
+			int j = i+1;
+			ActionCond target;
+			if (errno){
+				target = COND_AND;
 			}
+			else{
+				target = COND_OR;
+			}
+			while (j < count_cmd && actionsCond[j-1] == target){
+				free_args(args_list[j]);
+				j++;
+			}
+			i = j;
 		}
 
 		if (actionsCond) free(actionsCond);

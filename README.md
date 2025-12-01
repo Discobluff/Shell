@@ -1,0 +1,48 @@
+# Shell
+
+## Summary
+
+1. [Installation](#1-installation)
+2. [Execution](#2-execution)
+3. [How to use](#3-how-to-use)
+4. [Implemented features](#4-implemented-features)
+5. [Custom commands](#5-custom-commands)
+6. [TODO](#6-todo)
+
+## 1. Installation
+
+Require `gcc`
+
+## 2. Execution
+
+`make run`
+
+## 3. How to use
+
+### Stop the shell
+
+Enter `fin` or Ctrl+D
+
+## 4. Implemented features
+
+- Piping commands with `|`
+- Redirections with `<`, `>` and `>>`
+- Changing directory with `cd`
+- Multi-line commands with `;`
+- Chaining commands with conditions with `&&` and `||`
+
+## 5. Custom commands
+
+- `myps`
+- `mypstree`
+- `mynetstat`
+- `myarp`
+- `myenv -p <PID>`
+
+## 6. TODO
+
+- Background processus with `&`
+- Stop the processus with Ctrl+Z, Ctrl+C
+- Arrows in the shell
+- Environnement variables
+- The others custom commands

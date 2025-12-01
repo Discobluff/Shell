@@ -1,59 +1,117 @@
 #include "parser.h"
 
-int split_to_args_list(char *line, char ****args_list){
-	int cmd_count = 0;
+char *strCopy(char *input, int indexStart, int indexEnd){
+	int len = indexEnd-indexStart+2;
+	char *res = malloc(sizeof(char)*len);
+	for (int i=indexStart;i<=indexEnd;i++){
+		res[i-indexStart] = input[i];
+	}
+	res[len-1] = '\0';
+	return res;
+}
+
+int split_string_with_delimiters(char *line, char ***split, ActionCond **actionsCond){
+	int split_count = 0;
 	int i = 0;
 
-	// Compter le nombre de commandes (nombre de pipes + 1)
 	while (line[i] != '\0') {
 		if (line[i] == ';') {
-			cmd_count++;
+			split_count++;
+		}
+		if ((line[i] == '&' && line[i+1] == '&') || (line[i] == '|' && line[i+1] == '|')){
+			split_count++;
+			i++;
 		}
 		i++;
 	}
-	cmd_count++;
-	char ***res = malloc(sizeof(char**)*cmd_count);
-	if (!res){
+	split_count++;
+	(*split) = malloc(sizeof(char*)*split_count);
+	if (!(*split)){
 		perror("shell: allocation error\n");
 		exit(EXIT_FAILURE);
 	}
-	int index_args = 0;
-	char *savePointer;
-	char *currentCommand = strtok_r(line,TOKEN_SEP, &savePointer);
-
-	while (index_args < cmd_count){
-		int bufsize = TOKEN_BUFSIZE, position = 0;
-		char** tokens = malloc(bufsize * sizeof(char*));
-		char* token;
-		if (!tokens) {
+	if (split_count == 1){
+		(*actionsCond) = NULL;
+	}
+	else{
+		(*actionsCond) = malloc(sizeof(ActionCond)*(split_count-1));
+		if (!(*actionsCond)){
 			perror("shell: allocation error\n");
 			exit(EXIT_FAILURE);
-		  }
-		
-		token = strtok(currentCommand, TOKEN_DELIM);
-		while (token != NULL) {
-			// printf("%d %s\n",index_args, token);
-			tokens[position] = token;
-			position++;
-	
-			if (position >= bufsize) {
-				bufsize += TOKEN_BUFSIZE;
-				tokens = realloc(tokens, bufsize * sizeof(char*));
-				if (!tokens) {
-					perror("shell: allocation error\n");
-					exit(EXIT_FAILURE);
-				}
-			}
-	
-			token = strtok(NULL, TOKEN_DELIM);
 		}
-		tokens[position] = NULL;
-		res[index_args] = tokens;
-		index_args ++;
-		currentCommand = strtok_r(NULL, TOKEN_SEP, &savePointer);
 	}
-	*args_list = res;
-	return cmd_count;
+	int indexSplit = 0;
+	int indexLineStart = 0;
+	int indexLineEnd = 0;
+	while (line[indexLineEnd] != '\0'){
+		if (line[indexLineEnd] == ';'){
+			(*split)[indexSplit] = strCopy(line, indexLineStart, indexLineEnd-1);
+			(*actionsCond)[indexSplit] = COND_NONE;
+			indexSplit++;
+			indexLineStart = indexLineEnd+1;
+		}
+		else if (line[indexLineEnd] == '&' && line[indexLineEnd+1] == '&'){
+			(*split)[indexSplit] = strCopy(line, indexLineStart, indexLineEnd-1);
+			(*actionsCond)[indexSplit] = COND_AND;
+			indexSplit++;
+			indexLineEnd++;
+			indexLineStart = indexLineEnd+1;
+		}
+		else if (line[indexLineEnd] == '|' && line[indexLineEnd+1] == '|'){
+			(*split)[indexSplit] = strCopy(line, indexLineStart, indexLineEnd-1);
+			(*actionsCond)[indexSplit] = COND_OR;
+			indexSplit++;
+			indexLineEnd++;
+			indexLineStart = indexLineEnd+1;
+		}
+		indexLineEnd++;
+	}
+	(*split)[indexSplit] = strCopy(line, indexLineStart, indexLineEnd-2);
+	return split_count;
+}
+
+int split_to_args_list(char *line, char ****args_list, ActionCond **actionsCond){
+	char **split;
+	int count = split_string_with_delimiters(line, &split, actionsCond);
+	(*args_list) = malloc(sizeof(char**)*count);
+	for (int i=0;i<count;i++){
+		(*args_list)[i] = split_to_args(split[i]);
+		free(split[i]);
+	}
+	free(split);
+	return count;
+}
+
+char** split_to_args(char *line)
+{
+	int bufsize = TOKEN_BUFSIZE, position = 0;
+	char** tokens = malloc(bufsize * sizeof(char*));
+	char* token;
+
+	if (!tokens) {
+		perror("shell: allocation error\n");
+		exit(EXIT_FAILURE);
+  	}
+
+	token = strtok(line, TOKEN_DELIM);
+	while (token != NULL) {
+		// tokens[position] = token;
+		tokens[position] = strdup(token);
+		position++;
+
+		if (position >= bufsize) {
+			bufsize += TOKEN_BUFSIZE;
+			tokens = realloc(tokens, bufsize * sizeof(char*));
+			if (!tokens) {
+				perror("shell: allocation error\n");
+				exit(EXIT_FAILURE);
+			}
+		}
+
+		token = strtok(NULL, TOKEN_DELIM);
+	}
+	tokens[position] = NULL;
+	return tokens;
 }
 
 // gets line from stdin & ends program when EOF is encountered

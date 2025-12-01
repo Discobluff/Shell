@@ -1,4 +1,4 @@
-- [Hugo DARTOY](mailto:hugo.dartoy@telecomnancy.eu)
+- [Hugo Dartoy](mailto:hugo.dartoy@telecomnancy.eu)
 - [Paul-Alexandre Deguilhen](mailto:paul-alexandre.deguilhen@telecomnancy.eu)
 - [Enzo Holzmann Gaio](mailto:enzo.holzmann-gaio@telecomnancy.eu)
 - [Salif Veret](mailto:salif.veret@telecomnancy.eu)

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "runner.h"
 #include "parser/parser.h"
+#include <errno.h>
 
 #define MAX_USER_SIZE 32
 #define MAX_NAME_SIZE 32
@@ -9,6 +10,16 @@
 extern char** environ;
 
 int debug = 0;
+
+void free_args(char **args){
+	int i = 0;
+	while (args[i]){
+		// printf("%s\n",args[i]);
+		free(args[i]);
+		i++;
+	}
+	free(args);
+}
 
 int main(int argc, char** argv)
 {
@@ -51,12 +62,20 @@ int main(int argc, char** argv)
 		if (!isatty(STDIN_FILENO)) {printf("%s\n", input); fflush(stdout);}
 		
 		char ***args_list;
-		int count_cmd = split_to_args_list(input, &args_list);
+		ActionCond *actionsCond;
+		int count_cmd = split_to_args_list(input, &args_list, &actionsCond);
 		for (int i=0;i<count_cmd;i++){
 			status = run(args_list[i]);
-			free(args_list[i]);
+			free_args(args_list[i]);
+			if (i != count_cmd-1 && ((!errno && actionsCond[i] == COND_OR) || (errno && actionsCond[i] == COND_AND))){
+				for (int j=i+1;j<count_cmd;j++){
+					free_args(args_list[j]);
+				}
+				break;
+			}
 		}
 
+		if (actionsCond) free(actionsCond);
 		free(input); free(args_list);
 	} while(status);
 

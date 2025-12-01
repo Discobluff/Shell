@@ -100,6 +100,11 @@ test;:
   variables:
     CMD: "ls ; echo bonjour"
 
+test&&||:
+  extends: .template_generic
+  variables:
+    CMD: "ls||ls;ls&&ls;lsd||ls;lsd&&ls;ls||lsd;ls&&lsd"
+
 cd:
   extends: .template_generic
   variables:

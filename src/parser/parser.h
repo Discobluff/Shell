@@ -15,6 +15,12 @@
 #define TOKEN_DELIM " \t\r\n\a"
 #define TOKEN_SEP ";"
 
+typedef enum {
+	COND_NONE,
+	COND_AND,
+	COND_OR,
+} ActionCond;
+
 extern int debug;
 
 
@@ -28,7 +34,9 @@ typedef struct {
 } command_t;
 
 // functions for command line
-int split_to_args_list(char *line, char ****args_list);
+// int split_to_args_list(char *line, char ****args_list);
+int split_to_args_list(char *line, char ****args_list, ActionCond **actionsCond);
+char** split_to_args(char *line);
 char* get_line(void);
 
 // parser for runners

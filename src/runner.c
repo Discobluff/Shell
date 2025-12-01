@@ -1,6 +1,7 @@
 #include "runner.h"
 #include "cmd/cmd.h"
 #include "parser/parser.h"
+#include <errno.h>
 
 // execute the commands as they come with pipe chaining
 static int execute_pipeline(command_t* commands, int cmd_count)
@@ -73,6 +74,10 @@ static int execute_pipeline(command_t* commands, int cmd_count)
 			// Parent process
 			int status;
             waitpid(pid, &status, 0);
+			if (WIFEXITED(status)) {
+				int child_errno = WEXITSTATUS(status);
+				errno = child_errno;
+			}
             return 1;
 		}
 	}

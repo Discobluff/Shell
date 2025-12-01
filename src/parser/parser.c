@@ -1,5 +1,8 @@
 #include "parser.h"
 
+const int nb_commands_without_fork = 5;
+static const char *commands_without_fork[] = {"cd", "myinfo", "myenv", "mymaps", "mydump"};
+
 int split_to_args_list(char *line, char ****args_list){
 	int cmd_count = 0;
 	int i = 0;
@@ -169,8 +172,11 @@ int parse_pipeline(char** line, command_t** commands)
 		j = start;
 		
 		while (j < end) {
-			if (strcmp(line[j], "cd") == 0){
-				(*commands)[cmd_idx].need_fork = false;
+			for (int k=0;k<nb_commands_without_fork;k++){
+				if (strcmp(line[j], commands_without_fork[k]) == 0){
+					(*commands)[cmd_idx].need_fork = false;
+					break;
+				}
 			}
 			if (debug) printf("on token %s\n", line[j]);
 

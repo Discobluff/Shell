@@ -27,7 +27,7 @@ const function builtin_func[] = {
 	[5] = (function) {.type = no_arg, .fun.no_arg = myinfo},
 
 	// with args
-	[6] = (function) {.type = no_arg, .fun.with_arg = myenv},
+	[6] = (function) {.type = with_arg, .fun.with_arg = myenv},
 	[7] = (function) {.type = with_arg, .fun.with_arg = cd},
 	[8] = (function) {.type = with_arg, .fun.with_arg = mymaps},
 	[9] = (function) {.type = with_arg, .fun.with_arg = mydump},

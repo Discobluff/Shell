@@ -1,9 +1,10 @@
 #include "cmd.h"
 #include <string.h>
+#include <errno.h>
 
 int myenv(char **args)
 {
-	if (strcmp("-p",args[1]) == 0){
+	if (args[1] != NULL && strcmp("-p",args[1]) == 0){
 		char *pid = args[2];
 		char path[200];
 		sprintf(path, "/proc/%s/environ", pid);

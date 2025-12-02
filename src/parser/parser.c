@@ -1,5 +1,87 @@
 #include "parser.h"
 
+char *strCopy(char *input, int indexStart, int indexEnd){
+	int len = indexEnd-indexStart+2;
+	char *res = malloc(sizeof(char)*len);
+	for (int i=indexStart;i<=indexEnd;i++){
+		res[i-indexStart] = input[i];
+	}
+	res[len-1] = '\0';
+	return res;
+}
+
+int split_string_with_delimiters(char *line, char ***split, ActionCond **actionsCond){
+	int split_count = 0;
+	int i = 0;
+
+	while (line[i] != '\0') {
+		if (line[i] == ';') {
+			split_count++;
+		}
+		if ((line[i] == '&' && line[i+1] == '&') || (line[i] == '|' && line[i+1] == '|')){
+			split_count++;
+			i++;
+		}
+		i++;
+	}
+	split_count++;
+	(*split) = malloc(sizeof(char*)*split_count);
+	if (!(*split)){
+		perror("shell: allocation error\n");
+		exit(EXIT_FAILURE);
+	}
+	if (split_count == 1){
+		(*actionsCond) = NULL;
+	}
+	else{
+		(*actionsCond) = malloc(sizeof(ActionCond)*(split_count-1));
+		if (!(*actionsCond)){
+			perror("shell: allocation error\n");
+			exit(EXIT_FAILURE);
+		}
+	}
+	int indexSplit = 0;
+	int indexLineStart = 0;
+	int indexLineEnd = 0;
+	while (line[indexLineEnd] != '\0'){
+		if (line[indexLineEnd] == ';'){
+			(*split)[indexSplit] = strCopy(line, indexLineStart, indexLineEnd-1);
+			(*actionsCond)[indexSplit] = COND_NONE;
+			indexSplit++;
+			indexLineStart = indexLineEnd+1;
+		}
+		else if (line[indexLineEnd] == '&' && line[indexLineEnd+1] == '&'){
+			(*split)[indexSplit] = strCopy(line, indexLineStart, indexLineEnd-1);
+			(*actionsCond)[indexSplit] = COND_AND;
+			indexSplit++;
+			indexLineEnd++;
+			indexLineStart = indexLineEnd+1;
+		}
+		else if (line[indexLineEnd] == '|' && line[indexLineEnd+1] == '|'){
+			(*split)[indexSplit] = strCopy(line, indexLineStart, indexLineEnd-1);
+			(*actionsCond)[indexSplit] = COND_OR;
+			indexSplit++;
+			indexLineEnd++;
+			indexLineStart = indexLineEnd+1;
+		}
+		indexLineEnd++;
+	}
+	(*split)[indexSplit] = strCopy(line, indexLineStart, indexLineEnd-2);
+	return split_count;
+}
+
+int split_to_args_list(char *line, char ****args_list, ActionCond **actionsCond){
+	char **split;
+	int count = split_string_with_delimiters(line, &split, actionsCond);
+	(*args_list) = malloc(sizeof(char**)*count);
+	for (int i=0;i<count;i++){
+		(*args_list)[i] = split_to_args(split[i]);
+		free(split[i]);
+	}
+	free(split);
+	return count;
+}
+
 char** split_to_args(char *line)
 {
 	int bufsize = TOKEN_BUFSIZE, position = 0;
@@ -13,7 +95,8 @@ char** split_to_args(char *line)
 
 	token = strtok(line, TOKEN_DELIM);
 	while (token != NULL) {
-		tokens[position] = token;
+		// tokens[position] = token;
+		tokens[position] = strdup(token);
 		position++;
 
 		if (position >= bufsize) {
@@ -50,6 +133,8 @@ char* get_line(void)
 	return line;
 }
 
+
+
 static void init_command(command_t* cmd)
 {
 	cmd->args = NULL;
@@ -57,7 +142,33 @@ static void init_command(command_t* cmd)
 	cmd->output_file = NULL;
 	cmd->append = false;
 	cmd->error_file = NULL;
+	cmd->need_fork = true;
 }
+
+
+static char* expand_variable(const char* token)
+{
+	const char* var_name = token + 1; // go past the '$'
+
+	// special variables $? / $$ ...
+	if (*var_name == '$') {
+		static char buf[16];
+		snprintf(buf, sizeof(buf), "%d", getpid());
+		return strdup(buf);
+	}
+	else if (!isalnum(*var_name)) {
+		fprintf(stderr, "oops this is not implemented yet... (only done $VAR and $$)\n");
+		return NULL; 
+	}
+
+	char* value = getenv(var_name);
+	if (value) {
+		return strdup(value);
+	}
+
+	return strdup("");
+}
+
 
 // returns the number of commands separated by pipes and puts them in commands
 int parse_pipeline(char** line, command_t** commands)
@@ -95,10 +206,10 @@ int parse_pipeline(char** line, command_t** commands)
 		int j = start;
 		
 		while (j < end) {
-			if (strcmp(line[j], "<") == 0 || 
-				strcmp(line[j], ">") == 0 || 
-				strcmp(line[j], ">>") == 0 ||
-				strcmp(line[j], "2>") == 0) {
+			if (strcmp(line[j], "<") == 0
+				 || strcmp(line[j], ">") == 0
+				 || strcmp(line[j], ">>") == 0
+				 || strcmp(line[j], "2>") == 0) {
 				j += 2;
 			} else {
 				arg_count++;
@@ -116,6 +227,11 @@ int parse_pipeline(char** line, command_t** commands)
 		j = start;
 		
 		while (j < end) {
+			if (strcmp(line[j], "cd") == 0){
+				(*commands)[cmd_idx].need_fork = false;
+			}
+			if (debug) printf("on token %s\n", line[j]);
+
 			if (strcmp(line[j], "<") == 0) {
 				if (j + 1 < end && line[j + 1] != NULL) {
 					(*commands)[cmd_idx].input_file = line[j + 1];
@@ -154,8 +270,17 @@ int parse_pipeline(char** line, command_t** commands)
 					j++;
 				}
 			}
+			else if (strstr(line[j], "$")) {
+				args[arg_idx++] = expand_variable(line[j]);
+				if (debug) printf("\t> command[%d] arg %d = '%s' (to expand)\n", cmd_idx, arg_idx - 1, line[j]);
+				j++;
+			}
+			else if (strcmp(line[j], "$(") == 0) {
+				fprintf(stderr, "comming soon!\n");
+			}
 			else {
 				args[arg_idx++] = line[j];
+				if (debug) printf("\t> command[%d] arg %d = '%s'\n", cmd_idx, arg_idx - 1, line[j]);
 				j++;
 			}
 		}

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdbool.h>
 
 typedef struct {
 	enum {with_arg, no_arg} type;
@@ -28,6 +29,7 @@ int myexe(void);
  * fork-executed functions that take arguments
  */
 int myenv(char** args);
+int cd(char ** args);
 
 /* ls, grep, etc */
 int generic_fun(char** args);
@@ -47,6 +49,6 @@ extern const function builtin_func[];
  */
 extern const function generic;
 
-void function_handler(char** args);
+void function_handler(char** args, bool exit_fork);
 
 #endif

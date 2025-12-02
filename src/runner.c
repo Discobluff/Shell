@@ -1,7 +1,6 @@
 #include "runner.h"
 #include "cmd/cmd.h"
 #include "parser/parser.h"
-#include "cmd/job.h"
 
 // execute the commands as they come with pipe chaining
 static int execute_pipeline(command_t* commands, int cmd_count)
@@ -67,6 +66,7 @@ static int execute_pipeline(command_t* commands, int cmd_count)
 				commands[0].args[len - 1] = NULL;
 				// run in background
 				if(fork() == 0){
+					
 					function_handler(commands[0].args);
 				} else {
 					exit(EXIT_SUCCESS);

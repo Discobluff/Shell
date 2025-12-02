@@ -13,7 +13,11 @@ SRCS = src/main.c \
        src/cmd/mynetstat.c \
        src/cmd/myarp.c \
        src/cmd/myexe.c \
+<<<<<<< HEAD
        src/cmd/job.c
+=======
+       src/cmd/cd.c
+>>>>>>> master
 
 OBJS = $(SRCS:.c=.o)
 

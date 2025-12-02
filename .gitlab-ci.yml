@@ -39,14 +39,14 @@ compile:
   rules:
     - if: '$BUILD == "false"'
   script:
-    - echo "$CMD" | ./main
+    - echo "$CMD" | make run
 
 .template_custom_with_args:
   stage: tests_custom_with_args
   rules:
     - if: '$BUILD == "false"'
   script:
-    - echo "$CMD" | ./main
+    - echo "$CMD" | make run
 
 myps:
   extends: .template_custom_without_args
@@ -78,7 +78,7 @@ myenv:
   rules:
     - if: '$BUILD == "false"'
   script:
-    - echo "$CMD" | ./main
+    - make run <<< "$CMD"
 
 ls:
   extends: .template_generic
@@ -88,9 +88,24 @@ ls:
 test1:
   extends: .template_generic
   variables:
-    CMD: "echo bonjour > test.txt\n ls\ncat test.txt\n rm test.txt"
+    CMD: "echo bonjour > test.txt\nls\ncat test.txt\n rm test.txt"
   
 test2:
   extends: .template_generic
   variables:
-    CMD: "echo test.txt > test.txt \n cat test.txt | xargs rm"
+    CMD: "echo test.txt > test.txt \ncat test.txt | xargs rm"
+
+test;:
+  extends: .template_generic
+  variables:
+    CMD: "ls ; echo bonjour"
+
+test&&||:
+  extends: .template_generic
+  variables:
+    CMD: "ls||ls;ls&&ls;lsd||ls;lsd&&ls;ls||lsd;ls&&lsd"
+
+cd:
+  extends: .template_generic
+  variables:
+    CMD: "cd src \npwd"

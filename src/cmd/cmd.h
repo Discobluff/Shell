@@ -1,6 +1,8 @@
 #ifndef CMD_H
 #define CMD_H
 
+#define _DEFAULT_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -24,12 +26,17 @@ int mypstree(void);
 int mynetstat(void);
 int myarp(void);
 int myexe(void);
+int myinfo(void);
 
 /**
  * fork-executed functions that take arguments
  */
 int myenv(char** args);
 int cd(char ** args);
+int mymaps(char** args);
+int mydump(char ** args);
+
+int mylof(char ** args);
 
 /* ls, grep, etc */
 int generic_fun(char** args);

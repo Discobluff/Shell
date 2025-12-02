@@ -31,3 +31,17 @@ int jobs(void) {
 
     return 0;
 }
+
+int remove_job(pid_t pid) {
+    for (int i = 0; i < MAX_JOBS; i++) {
+        if (jobs_list[i].pid == pid) {
+            free(jobs_list[i].command);
+            jobs_list[i].pid = -1;
+            jobs_list[i].command = NULL;
+            jobs_list[i].status = -1; // no job running
+            return 0; // success
+        }
+    }
+    return -1; // job not found
+}
+

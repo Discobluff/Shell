@@ -16,6 +16,7 @@ typedef struct {
 extern job_t jobs_list[MAX_JOBS];
 
 int jobs(void);
+int remove_job(pid_t pid);
 void handle_sigchld(int sig);
 
 #endif

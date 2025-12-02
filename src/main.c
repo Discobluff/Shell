@@ -1,5 +1,9 @@
+#define _XOPEN_SOURCE 700
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
+#include <string.h>
+#include <unistd.h>
 #include "runner.h"
 #include "parser/parser.h"
 #include <errno.h>
@@ -26,11 +30,17 @@ void free_args(char **args){
 
 int main(int argc, char** argv)
 {
+	//JOB CONTROL INIT
 	for (int i = 0; i < MAX_JOBS; i++) {
 	jobs_list[i].pid = -1;
 	jobs_list[i].command = NULL;
 	jobs_list[i].status = -1; // no job running
 	}
+	//handler for SIGCHLD
+	struct sigaction sa;
+	memset(&sa, 0, sizeof(sa));
+	sa.sa_handler = &handle_sigchld;
+	sigaction(SIGCHLD, &sa, NULL);
 
 	char* input;
 	char path[1024];

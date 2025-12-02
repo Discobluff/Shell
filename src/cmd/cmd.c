@@ -9,11 +9,14 @@ const char* builtin_str[] = {
 	[2] = "mynetstat",
 	[3] = "myarp",
 	[4] = "myexe",
-	[5] = "jobs",
-
+	[5] = "myinfo",
+	[6] = "jobs",
 	// with args
-	[6] = "myenv",
-	[7] = "cd",
+	[7] = "myenv",
+	[8] = "cd",
+	[9] = "mymaps",
+	[10] = "mydump",
+	[11] = "mylof",
 };
 
 const function builtin_func[] = {
@@ -23,11 +26,16 @@ const function builtin_func[] = {
 	[2] = (function) {.type = no_arg, .fun.no_arg = mynetstat},
 	[3] = (function) {.type = no_arg, .fun.no_arg = myarp},
 	[4] = (function) {.type = no_arg, .fun.no_arg = myexe},
-	[5] = (function) {.type = no_arg, .fun.no_arg = jobs},
+	[5] = (function) {.type = no_arg, .fun.no_arg = myinfo},
+	[6] = (function) {.type = no_arg, .fun.no_arg = jobs},
 
 	// with args
-	[6] = (function) {.type = with_arg, .fun.with_arg = myenv},
-	[7] = (function) {.type = with_arg, .fun.with_arg = cd},
+	[7] = (function) {.type = with_arg, .fun.with_arg = myenv},
+	[8] = (function) {.type = with_arg, .fun.with_arg = cd},
+	[9] = (function) {.type = with_arg, .fun.with_arg = mymaps},
+	[10] = (function) {.type = with_arg, .fun.with_arg = mydump},
+	[11] = (function) {.type = with_arg, .fun.with_arg = mylof},
+
 };
 
 const function generic = {.type = with_arg, .fun.with_arg = generic_fun};

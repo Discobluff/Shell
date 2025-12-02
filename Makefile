@@ -14,6 +14,10 @@ SRCS = src/main.c \
        src/cmd/myarp.c \
        src/cmd/myexe.c \
        src/cmd/job.c \
+       src/cmd/myinfo.c \
+       src/cmd/mymaps.c \
+       src/cmd/mydump.c \
+       src/cmd/mylof.c \
        src/cmd/cd.c
 
 OBJS = $(SRCS:.c=.o)

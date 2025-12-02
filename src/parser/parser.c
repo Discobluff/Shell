@@ -10,8 +10,12 @@ char *strCopy(char *input, int indexStart, int indexEnd){
 	return res;
 }
 
+const int nb_commands_without_fork = 6;
+static const char *commands_without_fork[] = {"cd", "myinfo", "myenv", "mymaps", "mydump","mylof"};
+
 int split_string_with_delimiters(char *line, char ***split, ActionCond **actionsCond){
 	int split_count = 0;
+	int cmd_count = 0;
 	int i = 0;
 
 	while (line[i] != '\0') {
@@ -227,8 +231,11 @@ int parse_pipeline(char** line, command_t** commands)
 		j = start;
 		
 		while (j < end) {
-			if (strcmp(line[j], "cd") == 0){
-				(*commands)[cmd_idx].need_fork = false;
+			for (int k=0;k<nb_commands_without_fork;k++){
+				if (strcmp(line[j], commands_without_fork[k]) == 0){
+					(*commands)[cmd_idx].need_fork = false;
+					break;
+				}
 			}
 			if (debug) printf("on token %s\n", line[j]);
 

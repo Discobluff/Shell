@@ -105,6 +105,11 @@ test&&||:
   variables:
     CMD: "ls||ls;ls&&ls;lsd||ls;lsd&&ls;ls||lsd;ls&&lsd"
 
+test~:
+  extends: .template_generic
+  variables:
+    CMD: "cd ; pwd ; cd .. ; cd ~ ; pwd"
+
 cd:
   extends: .template_generic
   variables:

@@ -12,7 +12,6 @@
 #define MAX_USER_SIZE 32
 #define MAX_NAME_SIZE 32
 
-extern char** environ;
 
 
 job_t jobs_list[MAX_JOBS];
@@ -21,7 +20,6 @@ int debug = 0;
 void free_args(char **args){
 	int i = 0;
 	while (args[i]){
-		// printf("%s\n",args[i]);
 		free(args[i]);
 		i++;
 	}
@@ -44,30 +42,20 @@ int main(int argc, char** argv)
 
 	char* input;
 	char path[1024];
+	char showPath[1024];
 	int status = 1;
 
 	if (argc > 1 && strcmp(argv[1], "--debug") == 0) {
 		debug = 1;
 	}
 
-	char user[MAX_USER_SIZE],
-		 name[MAX_NAME_SIZE],
-		 computer_name[MAX_USER_SIZE + MAX_NAME_SIZE + 2];
+	char* user = getenv("USER"),
+		 *name = getenv("NAME"),
+		 *computer_name  = malloc(sizeof(char)*(MAX_USER_SIZE + MAX_NAME_SIZE + 1));
 
-	int i = 0;
-	int has_name = 0;
-	while(environ[i]) {
-		if (strncmp(environ[i], "USER", 4) == 0)
-			strncpy(user, environ[i]+5, MAX_USER_SIZE);
-		else if (strncmp(environ[i], "NAME", 4) == 0) {
-			strncpy(name, environ[i]+5, MAX_NAME_SIZE);
-			has_name = 1;
-		}
-		i++;
-	}
 
-	if (has_name) {
-		snprintf(computer_name, MAX_USER_SIZE + MAX_NAME_SIZE + 1, "%s@%s:", user, name);
+	if (name) {
+		sprintf(computer_name, "%s@%s:", user, name);
 	}
 	else {
 		snprintf(computer_name, MAX_USER_SIZE + 1, "%s:", user);
@@ -75,7 +63,18 @@ int main(int argc, char** argv)
 
 	do {
 		getcwd(path, sizeof(path));
-		printf("\033[31m%s\033[m\033[32m%s\033[m > ", computer_name, path); fflush(stdout);
+		if (strcmp(path, getenv("HOME")) == 0){
+			strcpy(showPath, "~");
+		}
+		else{
+			strcpy(showPath, path);
+		}
+		if (errno){
+			printf("\033[31m➜ %s\033[m\033[32m%s\033[m > ", computer_name, showPath); fflush(stdout);
+		}
+		else{
+			printf("\033[32m➜ \033[m\033[31m%s\033[m\033[32m%s\033[m > ", computer_name, showPath); fflush(stdout);
+		}
 		input = get_line();
 
 		if (!isatty(STDIN_FILENO)) {printf("%s\n", input); fflush(stdout);}
@@ -84,7 +83,7 @@ int main(int argc, char** argv)
 		ActionCond *actionsCond;
 		int count_cmd = split_to_args_list(input, &args_list, &actionsCond);
 		for (int i=0;i<count_cmd;){
-			errno = 0;
+			// errno = 0;
 			status = run(args_list[i]);
 			free_args(args_list[i]);
 			int j = i+1;

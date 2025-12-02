@@ -50,7 +50,12 @@ int main(int argc, char** argv)
 		else{
 			strcpy(showPath, path);
 		}
-		printf("\033[31m%s\033[m\033[32m%s\033[m > ", computer_name, showPath); fflush(stdout);
+		if (errno){
+			printf("\033[31m➜ %s\033[m\033[32m%s\033[m > ", computer_name, showPath); fflush(stdout);
+		}
+		else{
+			printf("\033[32m➜ \033[m\033[31m%s\033[m\033[32m%s\033[m > ", computer_name, showPath); fflush(stdout);
+		}
 		input = get_line();
 
 		if (!isatty(STDIN_FILENO)) {printf("%s\n", input); fflush(stdout);}
@@ -59,7 +64,7 @@ int main(int argc, char** argv)
 		ActionCond *actionsCond;
 		int count_cmd = split_to_args_list(input, &args_list, &actionsCond);
 		for (int i=0;i<count_cmd;){
-			errno = 0;
+			// errno = 0;
 			status = run(args_list[i]);
 			free_args(args_list[i]);
 			int j = i+1;

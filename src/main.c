@@ -24,6 +24,7 @@ int main(int argc, char** argv)
 	char* input;
 	char path[1024];
 	char showPath[1024];
+	char *home = getenv("HOME");
 	int status = 1;
 
 	if (argc > 1 && strcmp(argv[1], "--debug") == 0) {
@@ -44,17 +45,17 @@ int main(int argc, char** argv)
 
 	do {
 		getcwd(path, sizeof(path));
-		if (strcmp(path, getenv("HOME")) == 0){
-			strcpy(showPath, "~");
+		if (strncmp(path, home, strlen(home)) == 0){
+			snprintf(showPath, sizeof(showPath), "~%s", path+strlen(home));
 		}
 		else{
 			strcpy(showPath, path);
 		}
 		if (errno){
-			printf("\033[31m➜ %s\033[m\033[32m%s\033[m > ", computer_name, showPath); fflush(stdout);
+			printf("\033[31m➜ %s\033[m\033[34m%s\033[m > ", computer_name, showPath); fflush(stdout);
 		}
 		else{
-			printf("\033[32m➜ \033[m\033[31m%s\033[m\033[32m%s\033[m > ", computer_name, showPath); fflush(stdout);
+			printf("\033[32m➜ \033[m\033[31m%s\033[m\033[34m%s\033[m > ", computer_name, showPath); fflush(stdout);
 		}
 		input = get_line();
 

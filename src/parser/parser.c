@@ -15,7 +15,6 @@ static const char *commands_without_fork[] = {"cd", "myinfo", "myenv", "mymaps",
 
 int split_string_with_delimiters(char *line, char ***split, ActionCond **actionsCond){
 	int split_count = 0;
-	int cmd_count = 0;
 	int i = 0;
 
 	while (line[i] != '\0') {

@@ -28,8 +28,10 @@ Enter `fin` or Ctrl+D
 - Piping commands with `|`
 - Redirections with `<`, `>` and `>>`
 - Changing directory with `cd`
-- Multi-line commands with `;`
+- Multi commands with `;`
 - Chaining commands with conditions with `&&` and `||`
+- Environnement variables ($HOME, ...)
+- Shell infos (succes of last command, user name, path)
 
 ## 5. Custom commands
 
@@ -38,11 +40,15 @@ Enter `fin` or Ctrl+D
 - `mynetstat`
 - `myarp`
 - `myenv -p <PID>`
+- `myinfo`
+- `mymaps -p <PID>`
+- `mydump -p <PID> --start 0x... --end 0x... -o fichier`
+- `mylof -p <PID>`
 
 ## 6. TODO
 
 - Background processus with `&`
 - Stop the processus with Ctrl+Z, Ctrl+C
 - Arrows in the shell
-- Environnement variables
-- The others custom commands
+- Export environnement variables
+- Handle "", ''

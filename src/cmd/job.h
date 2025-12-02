@@ -16,6 +16,7 @@ typedef struct {
 extern job_t jobs_list[MAX_JOBS];
 
 int jobs(void);
+int add_job(pid_t pid, const char* command);
 int remove_job(pid_t pid);
 void handle_sigchld(int sig);
 

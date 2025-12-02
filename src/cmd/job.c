@@ -1,6 +1,7 @@
 #include "job.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 int jobs(void) {
     int no_job = 1;
@@ -45,3 +46,18 @@ int remove_job(pid_t pid) {
     return -1; // job not found
 }
 
+int add_job(pid_t pid, const char* command) {
+    for (int i = 0; i < MAX_JOBS; i++) {
+        if (jobs_list[i].status == -1) {
+            jobs_list[i].pid = pid;
+            jobs_list[i].command = strdup(command);
+            jobs_list[i].status = 0; // running
+            return 0; // success
+        }
+    }
+    return -1; // no space for new job
+}
+
+void handle_sigchld(int sig){
+    return;
+}

@@ -9,10 +9,11 @@ const char* builtin_str[] = {
 	[2] = "mynetstat",
 	[3] = "myarp",
 	[4] = "myexe",
+	[5] = "jobs",
 
 	// with args
-	[5] = "myenv",
-	[6] = "cd",
+	[6] = "myenv",
+	[7] = "cd",
 };
 
 const function builtin_func[] = {
@@ -22,10 +23,11 @@ const function builtin_func[] = {
 	[2] = (function) {.type = no_arg, .fun.no_arg = mynetstat},
 	[3] = (function) {.type = no_arg, .fun.no_arg = myarp},
 	[4] = (function) {.type = no_arg, .fun.no_arg = myexe},
+	[5] = (function) {.type = no_arg, .fun.no_arg = jobs},
 
 	// with args
-	[5] = (function) {.type = with_arg, .fun.with_arg = myenv},
-	[6] = (function) {.type = with_arg, .fun.with_arg = cd},
+	[6] = (function) {.type = with_arg, .fun.with_arg = myenv},
+	[7] = (function) {.type = with_arg, .fun.with_arg = cd},
 };
 
 const function generic = {.type = with_arg, .fun.with_arg = generic_fun};

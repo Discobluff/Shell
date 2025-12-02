@@ -3,12 +3,15 @@
 #include "runner.h"
 #include "parser/parser.h"
 #include <errno.h>
+#include "cmd/cmd.h"
 
 #define MAX_USER_SIZE 32
 #define MAX_NAME_SIZE 32
 
 extern char** environ;
 
+
+job_t jobs_list[MAX_JOBS];
 int debug = 0;
 
 void free_args(char **args){
@@ -23,6 +26,12 @@ void free_args(char **args){
 
 int main(int argc, char** argv)
 {
+	for (int i = 0; i < MAX_JOBS; i++) {
+	jobs_list[i].pid = -1;
+	jobs_list[i].command = NULL;
+	jobs_list[i].status = -1; // no job running
+	}
+
 	char* input;
 	char path[1024];
 	int status = 1;

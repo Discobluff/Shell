@@ -66,15 +66,25 @@ static int execute_pipeline(command_t* commands, int cmd_count)
 				commands[0].args[len - 1] = NULL;
 				// run in background
 				if(fork() == 0){
-					
-					function_handler(commands[0].args);
+					function_handler(commands[0].args, false);
 				} else {
+					for (int j = 0; j < MAX_JOBS; j++) {
+						if (jobs_list[j].status == -1){
+							fprintf(stdout, "Adding job %d\n", j + 1);
+							jobs_list[j].pid = getpid();
+							jobs_list[j].command = strdup(commands[0].args[0]);
+							jobs_list[j].status = 0; // running
+							fprintf(stdout, "job status : %d\n", jobs_list[j].status);
+							break;
+						}
+					}
+					fprintf(stdout, "New job running\n");
 					exit(EXIT_SUCCESS);
 				}
 			}
 
 			else {
-				function_handler(commands[0].args);
+				function_handler(commands[0].args, false);
 			}
 
 
@@ -172,7 +182,7 @@ static int execute_pipeline(command_t* commands, int cmd_count)
 				close(pipefds[j]);
 
 			// handle the function
-			function_handler(commands[i].args);
+			function_handler(commands[i].args, false);
 			
 		} else if (pid < 0) {
 			fprintf(stderr, "fork");

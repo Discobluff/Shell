@@ -1,3 +1,6 @@
+#ifndef JOB_H
+#define JOB_H
+
 #include <stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -13,3 +16,5 @@ typedef struct {
 extern job_t jobs_list[MAX_JOBS];
 
 int jobs(void);
+
+#endif

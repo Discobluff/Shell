@@ -12,6 +12,11 @@
 // mydump -p <PID> --start 0x... --end 0x... -o fichier
 // mydump -p <PID> --start 0x... --end 0x... -o fichier
 int mydump(char **args){
+    if (args[1] ==NULL || strcmp("--help",args[1]) == 0 || strcmp("-h",args[1]) == 0){
+        printf("Usage: mydump -p <PID> --start 0x... --end 0x... -o <output_file>\n");
+        return 0;
+    }
+
     printf("Starting dump process...\n");
     if (strcmp("-p",args[1]) != 0){
         perror("Error opening file");

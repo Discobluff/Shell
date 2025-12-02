@@ -1,7 +1,7 @@
 #include "parser.h"
 
-const int nb_commands_without_fork = 5;
-static const char *commands_without_fork[] = {"cd", "myinfo", "myenv", "mymaps", "mydump"};
+const int nb_commands_without_fork = 6;
+static const char *commands_without_fork[] = {"cd", "myinfo", "myenv", "mymaps", "mydump","mylof"};
 
 int split_to_args_list(char *line, char ****args_list){
 	int cmd_count = 0;

@@ -13,7 +13,6 @@ int debug = 0;
 void free_args(char **args){
 	int i = 0;
 	while (args[i]){
-		// printf("%s\n",args[i]);
 		free(args[i]);
 		i++;
 	}
@@ -24,6 +23,7 @@ int main(int argc, char** argv)
 {
 	char* input;
 	char path[1024];
+	char showPath[1024];
 	int status = 1;
 
 	if (argc > 1 && strcmp(argv[1], "--debug") == 0) {
@@ -44,7 +44,13 @@ int main(int argc, char** argv)
 
 	do {
 		getcwd(path, sizeof(path));
-		printf("\033[31m%s\033[m\033[32m%s\033[m > ", computer_name, path); fflush(stdout);
+		if (strcmp(path, getenv("HOME")) == 0){
+			strcpy(showPath, "~");
+		}
+		else{
+			strcpy(showPath, path);
+		}
+		printf("\033[31m%s\033[m\033[32m%s\033[m > ", computer_name, showPath); fflush(stdout);
 		input = get_line();
 
 		if (!isatty(STDIN_FILENO)) {printf("%s\n", input); fflush(stdout);}

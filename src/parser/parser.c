@@ -69,7 +69,7 @@ int split_string_with_delimiters(char *line, char ***split, ActionCond **actions
 		}
 		indexLineEnd++;
 	}
-	(*split)[indexSplit] = strCopy(line, indexLineStart, indexLineEnd-2);
+	(*split)[indexSplit] = strCopy(line, indexLineStart, indexLineEnd-1);
 	return split_count;
 }
 

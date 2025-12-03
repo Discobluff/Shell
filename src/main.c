@@ -3,6 +3,8 @@
 #include "runner.h"
 #include "parser/parser.h"
 #include <errno.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 #define MAX_USER_SIZE 32
 #define MAX_NAME_SIZE 32
@@ -21,7 +23,7 @@ void free_args(char **args){
 
 int main(int argc, char** argv)
 {
-	char* input;
+	char* input = NULL;
 	char path[1024];
 	char showPath[1024];
 	char *home = getenv("HOME");
@@ -42,7 +44,6 @@ int main(int argc, char** argv)
 	else {
 		snprintf(computer_name, MAX_USER_SIZE + 1, "%s:", user);
 	}
-
 	do {
 		getcwd(path, sizeof(path));
 		if (strncmp(path, home, strlen(home)) == 0){
@@ -51,21 +52,32 @@ int main(int argc, char** argv)
 		else{
 			strcpy(showPath, path);
 		}
+		char message[2048];
 		if (errno){
-			printf("\033[31m➜ %s\033[m\033[34m%s\033[m > ", computer_name, showPath); fflush(stdout);
+			snprintf(message, sizeof(message), "\033[31m➜ %s\033[m\033[34m%s\033[m > ", computer_name, showPath);
 		}
 		else{
-			printf("\033[32m➜ \033[m\033[31m%s\033[m\033[34m%s\033[m > ", computer_name, showPath); fflush(stdout);
+			snprintf(message, sizeof(message), "\033[32m➜ \033[m\033[31m%s\033[m\033[34m%s\033[m > ", computer_name, showPath);
 		}
-		input = get_line();
-
-		if (!isatty(STDIN_FILENO)) {printf("%s\n", input); fflush(stdout);}
+		if (!isatty(STDIN_FILENO)) {
+			printf("%s",message);
+			fflush(stdout);
+			input = readline(NULL);
+		}
+		else{
+			input = readline(message);
+		}
+		if (input == NULL){
+			fflush(stdout);
+			break;
+		}
+		fflush(stdout);
+		add_history(input);
 		
 		char ***args_list;
 		ActionCond *actionsCond;
 		int count_cmd = split_to_args_list(input, &args_list, &actionsCond);
 		for (int i=0;i<count_cmd;){
-			// errno = 0;
 			status = run(args_list[i]);
 			free_args(args_list[i]);
 			int j = i+1;
@@ -84,8 +96,9 @@ int main(int argc, char** argv)
 		}
 
 		if (actionsCond) free(actionsCond);
-		free(input); free(args_list);
+		free(input); free(args_list); input = NULL;
 	} while(status);
 
+	free(computer_name);
 	return 0;
 }

@@ -5,3 +5,4 @@ RUN apt-get install --yes clang
 RUN apt-get install --yes git
 RUN apt-get install --yes net-tools
 RUN apt-get install --yes psmisc
+RUN apt-get install --yes libreadline-dev

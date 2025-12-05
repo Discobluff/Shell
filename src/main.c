@@ -78,6 +78,15 @@ int main(int argc, char** argv)
 		ActionCond *actionsCond;
 		int count_cmd = split_to_args_list(input, &args_list, &actionsCond);
 		for (int i=0;i<count_cmd;){
+			if (args_list[i][0] == NULL){
+				i++;
+				continue;
+			}
+			if (args_list[i][0][0] == '\0'){
+				free_args(args_list[i]);
+				i++;
+				continue;
+			}
 			status = run(args_list[i]);
 			free_args(args_list[i]);
 			int j = i+1;

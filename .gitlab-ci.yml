@@ -110,6 +110,11 @@ test~:
   variables:
     CMD: "cd ; pwd ; cd .. ; cd ~ ; pwd"
 
+test'":
+  extends: .template_generic
+  variables:
+    CMD: "echo 'bonjour coucou' > petit\\ test.txt ; ls ; cat 'petit test.txt'"
+
 cd:
   extends: .template_generic
   variables:

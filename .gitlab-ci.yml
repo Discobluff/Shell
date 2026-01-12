@@ -29,7 +29,7 @@ compile:
   rules:
     - if: $BUILD == "false"  
   script:
-    - make all
+    - make build
   artifacts:
     paths:
       - main

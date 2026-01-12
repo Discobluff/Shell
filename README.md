@@ -32,6 +32,8 @@ Enter `fin` or Ctrl+D
 - Chaining commands with conditions with `&&` and `||`
 - Environnement variables ($HOME, ...)
 - Shell infos (succes of last command, user name, path)
+- Shell with command history and moving cursor
+- Handle "", '', \  (no distinction between the two)
 
 ## 5. Custom commands
 
@@ -49,6 +51,3 @@ Enter `fin` or Ctrl+D
 
 - Background processus with `&`
 - Stop the processus with Ctrl+Z, Ctrl+C
-- Arrows in the shell
-- Export environnement variables
-- Handle "", ''

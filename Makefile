@@ -22,7 +22,7 @@ SRCS = src/main.c \
 OBJS = $(SRCS:.c=.o)
 
 
-all: $(TARGET)
+build: $(TARGET)
 
 $(TARGET): $(OBJS)
 	@$(CC) $(CFLAGS) -o $@ $^ -lreadline
@@ -34,12 +34,12 @@ $(TARGET): $(OBJS)
 clean:
 	@rm -f $(OBJS) $(TARGET)
 
-run: rebuild 
+run: build 
 	@./$(TARGET)
 
 test: rebuild
 	@./$(TARGET) --debug
 
-rebuild: clean all
+rebuild: clean build
 
-.PHONY: all clean rebuild run test
+.PHONY: build clean rebuild run test

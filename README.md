@@ -11,7 +11,14 @@
 
 ## 1. Installation
 
-Require `gcc`
+- Require `gcc`
+- Require `libreadline-dev`(https://tiswww.case.edu/php/chet/readline/rltop.html)
+
+    `sudo apt install libreadline-dev`
+
+- Clone the repository
+
+    `git clone https://gibson.telecomnancy.univ-lorraine.fr/projets/2526/Systeme/projet/Projet-systeme-groupe-30.git`
 
 ## 2. Execution
 

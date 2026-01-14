@@ -10,7 +10,6 @@ stages:
   - tests_generic
   - tests_custom_without_args
   - tests_custom_with_args
-  - test_sudo_commands
 
 build:
   stage: image-build
@@ -89,6 +88,11 @@ myloft:
   variables:
     CMD: "myloft -p $$"
 
+mydump:
+  extends: .template_custom_with_args
+  variables:
+    CMD: "mydump -p 1 --start 0x5b123bb6f000 --end 0x5b123bc4f000 -o fichier_dump.bin"
+
 .template_generic:
   stage: tests_generic
   rules:
@@ -135,15 +139,3 @@ cd:
   extends: .template_generic
   variables:
     CMD: "cd src \npwd"
-
-.sudo_commands:
-  stage: test_sudo_commands
-  rules:
-    - if: '$BUILD == "false"'
-  script:
-    - sudo make run <<< "$CMD"
-
-mydump:
-  extends: .sudo_commands
-  variables:
-    CMD: "mydump -p 1 --start 0x5b123bb6f000 --end 0x5b123bc4f000 -o fichier_dump.bin"

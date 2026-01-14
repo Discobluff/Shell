@@ -81,12 +81,12 @@ myenv:
 mymaps:
   extends: .template_custom_with_args
   variables:
-    CMD: "mymaps -p $$"
+    CMD: "mymaps -p 1"
 
 myloft:
   extends: .template_custom_with_args
   variables:
-    CMD: "myloft -p $$"
+    CMD: "myloft -p 1"
 
 mydump:
   extends: .template_custom_with_args

@@ -10,6 +10,7 @@ stages:
   - tests_generic
   - tests_custom_without_args
   - tests_custom_with_args
+  - test_sudo_commands
 
 build:
   stage: image-build
@@ -68,10 +69,25 @@ myarp:
   variables:
     CMD: "myarp"
 
+myinfo:
+  extends: .template_generic
+  variables:
+    CMD: "myinfo"
+
 myenv:
   extends: .template_custom_with_args
   variables:
     CMD: "myenv -p 1"
+
+mymaps:
+  extends: .template_custom_with_args
+  variables:
+    CMD: "mymaps -p $$"
+
+myloft:
+  extends: .template_custom_with_args
+  variables:
+    CMD: "myloft -p $$"
 
 .template_generic:
   stage: tests_generic
@@ -119,3 +135,15 @@ cd:
   extends: .template_generic
   variables:
     CMD: "cd src \npwd"
+
+.sudo_commands:
+  stage: test_sudo_commands
+  rules:
+    - if: '$BUILD == "false"'
+  script:
+    - sudo make run <<< "$CMD"
+
+mydump:
+  extends: .sudo_commands
+  variables:
+    CMD: "mydump -p 1 --start 0x5b123bb6f000 --end 0x5b123bc4f000 -o fichier_dump.bin"

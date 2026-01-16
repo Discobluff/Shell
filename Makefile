@@ -32,7 +32,7 @@ $(TARGET): $(OBJS)
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
-	@rm -f $(OBJS) $(TARGET)
+	@rm -f $(OBJS) $(TARGET) demo/demo1 demo/demo2
 
 run: build 
 	@./$(TARGET)
@@ -41,5 +41,8 @@ test: rebuild
 	@./$(TARGET) --debug
 
 rebuild: clean build
+
+demo%: demo/demo%.c
+	@$(CC) $(CFLAGS) -Wno-unused-result -o demo/$@ $<
 
 .PHONY: build clean rebuild run test

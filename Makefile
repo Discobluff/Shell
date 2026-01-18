@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g
+CFLAGS = -Wall -Wextra -g -fsanitize=address
 TARGET = main
 
 SRCS = src/main.c \
@@ -23,24 +23,27 @@ SRCS = src/main.c \
 OBJS = $(SRCS:.c=.o)
 
 
-all: $(TARGET)
+build: $(TARGET)
 
 $(TARGET): $(OBJS)
-	@$(CC) $(CFLAGS) -o $@ $^
+	@$(CC) $(CFLAGS) -o $@ $^ -lreadline
 
 
 %.o: %.c
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
-	@rm -f $(OBJS) $(TARGET)
+	@rm -f $(OBJS) $(TARGET) demo/demo1 demo/demo2
 
-run: rebuild 
+run: build 
 	@./$(TARGET)
 
 test: rebuild
 	@./$(TARGET) --debug
 
-rebuild: clean all
+rebuild: clean build
 
-.PHONY: all clean rebuild run test
+demo%: demo/demo%.c
+	@$(CC) $(CFLAGS) -Wno-unused-result -o demo/$@ $<
+
+.PHONY: build clean rebuild run test

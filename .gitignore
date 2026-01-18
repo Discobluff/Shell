@@ -1,3 +1,7 @@
 main
 *.o
 .vscode
+test_files/
+demo/*
+!demo/demo*.c
+.bash_history

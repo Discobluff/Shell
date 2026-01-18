@@ -15,10 +15,22 @@ static const char *commands_without_fork[] = {"cd", "myinfo", "myenv", "mymaps",
 
 int split_string_with_delimiters(char *line, char ***split, ActionCond **actionsCond){
 	int split_count = 0;
-	int cmd_count = 0;
 	int i = 0;
 
+	bool quote = false;
 	while (line[i] != '\0') {
+		if (!quote && (line[i] == '"' || line[i] == '\'')){
+			quote = true;
+		}
+		else{
+			if (quote && (line[i] == '"' || line[i] == '\'')){
+				quote = false;
+			}
+		}
+		if (quote){
+			i++;
+			continue;
+		}
 		if (line[i] == ';') {
 			split_count++;
 		}
@@ -47,7 +59,20 @@ int split_string_with_delimiters(char *line, char ***split, ActionCond **actions
 	int indexSplit = 0;
 	int indexLineStart = 0;
 	int indexLineEnd = 0;
+	quote = false;
 	while (line[indexLineEnd] != '\0'){
+		if (!quote && (line[indexLineEnd] == '"' || line[indexLineEnd] == '\'')){
+			quote = true;
+		}
+		else{
+			if (quote && (line[indexLineEnd] == '"' || line[indexLineEnd] == '\'')){
+				quote = false;
+			}
+		}
+		if (quote){
+			indexLineEnd++;
+			continue;
+		}
 		if (line[indexLineEnd] == ';'){
 			(*split)[indexSplit] = strCopy(line, indexLineStart, indexLineEnd-1);
 			(*actionsCond)[indexSplit] = COND_NONE;
@@ -70,7 +95,7 @@ int split_string_with_delimiters(char *line, char ***split, ActionCond **actions
 		}
 		indexLineEnd++;
 	}
-	(*split)[indexSplit] = strCopy(line, indexLineStart, indexLineEnd-2);
+	(*split)[indexSplit] = strCopy(line, indexLineStart, indexLineEnd-1);
 	return split_count;
 }
 
@@ -86,33 +111,78 @@ int split_to_args_list(char *line, char ****args_list, ActionCond **actionsCond)
 	return count;
 }
 
-char** split_to_args(char *line)
-{
+char *strCopyIgnoreQuote(char *input, int indexStart, int indexEnd){
+	int size = 1;
+	for (int i=indexStart; i<=indexEnd;i++){
+		if (input[i] == '\\' && input[i+1] == ' '){
+			size++;
+			i++;
+			continue;
+		}
+		if (input[i] != '"' && input[i] != '\''){
+			size++;
+		}
+	}
+	int shiftQuote = 0;
+	char *res = malloc(sizeof(char)*size);
+	for (int i=indexStart;i<=indexEnd;i++){
+		if (input[i] == '"' || input[i] == '\'' || input[i] == '\\'){
+			shiftQuote++;
+		}
+		else{
+			res[i-indexStart- shiftQuote] = input[i];
+		}
+	}
+	res[size-1] = '\0';
+	return res;
+}
+
+char **split_to_args(char *line){
 	int bufsize = TOKEN_BUFSIZE, position = 0;
 	char** tokens = malloc(bufsize * sizeof(char*));
-	char* token;
 
 	if (!tokens) {
 		perror("shell: allocation error\n");
 		exit(EXIT_FAILURE);
   	}
-
-	token = strtok(line, TOKEN_DELIM);
-	while (token != NULL) {
-		// tokens[position] = token;
-		tokens[position] = strdup(token);
-		position++;
-
-		if (position >= bufsize) {
-			bufsize += TOKEN_BUFSIZE;
-			tokens = realloc(tokens, bufsize * sizeof(char*));
-			if (!tokens) {
-				perror("shell: allocation error\n");
-				exit(EXIT_FAILURE);
+	int indexStart = 0;
+	int indexEnd = 0;
+	bool quote = false;
+	while (line[indexEnd] != '\0'){
+		if (!quote && (line[indexEnd] == '"' || line[indexEnd] == '\'')){
+			quote = true;
+		}
+		else{
+			if (quote && (line[indexEnd] == '"' || line[indexEnd] == '\'')){
+				quote = false;
 			}
 		}
-
-		token = strtok(NULL, TOKEN_DELIM);
+		if (quote){
+			indexEnd++;
+			continue;
+		}
+		bool delimEncountered = false;
+		for (int indexDelim=0; indexDelim<(int)strlen(TOKEN_DELIM);indexDelim++){
+			if (line[indexEnd] == TOKEN_DELIM[indexDelim] && !(indexEnd>0 && line[indexEnd-1] == '\\')){
+				if (indexStart < indexEnd){
+					char *token = strCopyIgnoreQuote(line, indexStart, indexEnd-1);
+					tokens[position] = token;
+					position++;
+				}
+					delimEncountered = true;
+					indexEnd++;
+					indexStart = indexEnd;
+					break;
+			}
+		}
+		if (!delimEncountered){
+			indexEnd++;
+		}
+	}
+	if (indexStart <indexEnd){
+		char *token = strCopyIgnoreQuote(line, indexStart, indexEnd-1);
+		tokens[position] = token;
+		position++;
 	}
 	tokens[position] = NULL;
 	return tokens;

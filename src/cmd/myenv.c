@@ -10,8 +10,8 @@ int myenv(char **args)
 		sprintf(path, "/proc/%s/environ", pid);
 		FILE *file = fopen(path, "r");
 		if (file == NULL) {
-			perror("Error opening file");
-			return 1;
+			errno = ESRCH;
+			return -1;
 		}
 
 		char c;
@@ -26,5 +26,6 @@ int myenv(char **args)
 		fclose(file);
 		return 0;
 	}
-	return 1;
+	errno = EINVAL;
+	return -1;
 }

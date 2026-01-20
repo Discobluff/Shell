@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdbool.h>
+#include "job.h"
 
 typedef struct {
 	enum {with_arg, no_arg} type;

@@ -1,13 +1,19 @@
+#define _XOPEN_SOURCE 700
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
+#include <string.h>
+#include <unistd.h>
 #include "runner.h"
 #include "parser/parser.h"
 #include <errno.h>
+#include "cmd/cmd.h"
 #include <readline/readline.h>
 #include <readline/history.h>
 
 #define MAX_USER_SIZE 32
 #define MAX_NAME_SIZE 32
+
 
 
 int debug = 0;
@@ -23,6 +29,26 @@ void free_args(char **args){
 
 int main(int argc, char** argv)
 {
+	//JOB CONTROL INIT
+	for (int i = 0; i < MAX_JOBS; i++) {
+	jobs_list[i].pid = -1;
+	jobs_list[i].command = NULL;
+	jobs_list[i].status = -1; // no job running
+	}
+	//handler for SIGCHLD
+	struct sigaction sa;
+	memset(&sa, 0, sizeof(sa));
+	sa.sa_handler = &handle_sigchld;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = SA_RESTART;
+	sigaction(SIGCHLD, &sa, NULL);
+
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
+    signal(SIGTSTP, SIG_IGN);
+    signal(SIGTTIN, SIG_IGN);
+    signal(SIGTTOU, SIG_IGN);
+
 	char* input = NULL;
 	char path[1024];
 	char showPath[1024];

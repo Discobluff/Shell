@@ -15,6 +15,7 @@ SRCS = src/main.c \
        src/cmd/mynetstat.c \
        src/cmd/myarp.c \
        src/cmd/myexe.c \
+       src/cmd/job.c \
        src/cmd/myinfo.c \
        src/cmd/mymaps.c \
        src/cmd/mydump.c \
@@ -44,6 +45,14 @@ run: build
 
 test: rebuild
 	@./$(TARGET) --debug
+
+test_unit: tests/test_job.c src/cmd/job.c
+	@$(CC) $(CFLAGS) -o tests/runner_unit $^
+	@./tests/runner_unit
+	@rm tests/runner_unit
+
+test_integration: build
+	@python3 tests/test_integration.py
 
 rebuild: clean build
 

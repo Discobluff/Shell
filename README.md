@@ -57,6 +57,7 @@ Enter `fin` or Ctrl+D
 - Shell infos (succes of last command, user name, path)
 - Shell with command history and moving cursor
 - Handle "", '', \  (no distinction between the two)
+- Job control (bg, fg, &, stop processus with Ctrl+Z, jobs)
 
 ## 6. Custom commands
 
@@ -71,6 +72,3 @@ Enter `fin` or Ctrl+D
 - `mylof -p <PID>`
 
 ## 7. TODO
-
-- Background processus with `&`
-- Stop the processus with Ctrl+Z, Ctrl+C

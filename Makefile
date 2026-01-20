@@ -41,6 +41,14 @@ run: build
 test: rebuild
 	@./$(TARGET) --debug
 
+test_unit: tests/test_job.c src/cmd/job.c
+	@$(CC) $(CFLAGS) -o tests/runner_unit $^
+	@./tests/runner_unit
+	@rm tests/runner_unit
+
+test_integration: build
+	@python3 tests/test_integration.py
+
 rebuild: clean build
 
 demo%: demo/demo%.c

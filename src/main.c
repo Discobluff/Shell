@@ -16,7 +16,6 @@
 
 
 
-job_t jobs_list[MAX_JOBS];
 int debug = 0;
 
 void free_args(char **args){

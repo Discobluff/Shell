@@ -6,6 +6,8 @@
 #include <sys/wait.h>
 #include <signal.h>
 
+job_t jobs_list[MAX_JOBS];
+
 int jobs(void) {
     int no_job = 1;
     for (int i = 0; i < MAX_JOBS; i++) {
@@ -68,6 +70,7 @@ int add_job(pid_t pid, const char* command) {
 }
 
 void handle_sigchld(int sig){
+    (void)sig;
     int status;
     pid_t pid;
 

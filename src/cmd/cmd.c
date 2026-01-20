@@ -11,14 +11,15 @@ const char* builtin_str[] = {
 	[4] = "myexe",
 	[5] = "myinfo",
 	[6] = "jobs",
+	[7] = "fin",
 	// with args
-	[7] = "myenv",
-	[8] = "cd",
-	[9] = "mymaps",
-	[10] = "mydump",
-	[11] = "mylof",
-	[12] = "fg",
-	[13] = "bg",
+	[8] = "myenv",
+	[9] = "cd",
+	[10] = "mymaps",
+	[11] = "mydump",
+	[12] = "mylof",
+	[13] = "fg",
+	[14] = "bg",
 };
 
 const function builtin_func[] = {
@@ -30,15 +31,16 @@ const function builtin_func[] = {
 	[4] = (function) {.type = no_arg, .fun.no_arg = myexe},
 	[5] = (function) {.type = no_arg, .fun.no_arg = myinfo},
 	[6] = (function) {.type = no_arg, .fun.no_arg = jobs},
+	[7] = (function) {.type = no_arg, .fun.no_arg = fin},
 
 	// with args
-	[7] = (function) {.type = with_arg, .fun.with_arg = myenv},
-	[8] = (function) {.type = with_arg, .fun.with_arg = cd},
-	[9] = (function) {.type = with_arg, .fun.with_arg = mymaps},
-	[10] = (function) {.type = with_arg, .fun.with_arg = mydump},
-	[11] = (function) {.type = with_arg, .fun.with_arg = mylof},
-	[12] = (function) {.type = with_arg, .fun.with_arg = fg},
-	[13] = (function) {.type = with_arg, .fun.with_arg = bg},
+	[8] = (function) {.type = with_arg, .fun.with_arg = myenv},
+	[9] = (function) {.type = with_arg, .fun.with_arg = cd},
+	[10] = (function) {.type = with_arg, .fun.with_arg = mymaps},
+	[11] = (function) {.type = with_arg, .fun.with_arg = mydump},
+	[12] = (function) {.type = with_arg, .fun.with_arg = mylof},
+	[13] = (function) {.type = with_arg, .fun.with_arg = fg},
+	[14] = (function) {.type = with_arg, .fun.with_arg = bg},
 
 };
 

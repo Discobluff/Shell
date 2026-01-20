@@ -20,7 +20,8 @@ SRCS = src/main.c \
        src/cmd/mymaps.c \
        src/cmd/mydump.c \
        src/cmd/mylof.c \
-       src/cmd/cd.c
+       src/cmd/cd.c \
+       src/cmd/fin.c
 
 OBJS = $(SRCS:.c=.o)
 

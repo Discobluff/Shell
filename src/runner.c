@@ -12,6 +12,7 @@ static int is_builtin_nofork(const char *cmd) {
     if (strcmp(cmd, "fg") == 0) return 1;
     if (strcmp(cmd, "bg") == 0) return 1;
     if (strcmp(cmd, "jobs") == 0) return 1;
+    if (strcmp(cmd, "fin") == 0) return 1;
     return 0;
 }
 
@@ -80,6 +81,9 @@ static int execute_pipeline(command_t* commands, int cmd_count)
             dup2(saved_stdin, STDIN_FILENO); close(saved_stdin);
             dup2(saved_stdout, STDOUT_FILENO); close(saved_stdout);
             dup2(saved_stderr, STDERR_FILENO); close(saved_stderr);
+            
+            if (strcmp(commands[0].args[0], "fin") == 0) return 0;
+            
             return 1;
         }
 

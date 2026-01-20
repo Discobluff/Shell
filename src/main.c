@@ -40,9 +40,16 @@ int main(int argc, char** argv)
 	struct sigaction sa;
 	memset(&sa, 0, sizeof(sa));
 	sa.sa_handler = &handle_sigchld;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = SA_RESTART;
 	sigaction(SIGCHLD, &sa, NULL);
 
-	char* input;
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
+    signal(SIGTSTP, SIG_IGN);
+    signal(SIGTTIN, SIG_IGN);
+    signal(SIGTTOU, SIG_IGN);
+
 	char* input = NULL;
 	char path[1024];
 	char showPath[1024];

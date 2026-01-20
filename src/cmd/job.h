@@ -20,4 +20,7 @@ int add_job(pid_t pid, const char* command);
 int remove_job(pid_t pid);
 void handle_sigchld(int sig);
 
+int fg(char **args);
+int bg(char **args);
+
 #endif

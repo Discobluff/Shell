@@ -17,6 +17,8 @@ const char* builtin_str[] = {
 	[9] = "mymaps",
 	[10] = "mydump",
 	[11] = "mylof",
+	[12] = "fg",
+	[13] = "bg",
 };
 
 const function builtin_func[] = {
@@ -35,6 +37,8 @@ const function builtin_func[] = {
 	[9] = (function) {.type = with_arg, .fun.with_arg = mymaps},
 	[10] = (function) {.type = with_arg, .fun.with_arg = mydump},
 	[11] = (function) {.type = with_arg, .fun.with_arg = mylof},
+	[12] = (function) {.type = with_arg, .fun.with_arg = fg},
+	[13] = (function) {.type = with_arg, .fun.with_arg = bg},
 
 };
 

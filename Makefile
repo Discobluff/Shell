@@ -1,6 +1,8 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g -fsanitize=address
+CFLAGS = -Wall -Wextra
 TARGET = main
+
+MAKEFLAGS = --no-print-directory
 
 SRCS = src/main.c \
        src/parser/parser.c \
@@ -31,6 +33,9 @@ $(TARGET): $(OBJS)
 
 %.o: %.c
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+farce: build
+	@./$(TARGET) --farce
 
 clean:
 	@rm -f $(OBJS) $(TARGET) demo/demo1 demo/demo2

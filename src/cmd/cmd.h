@@ -37,6 +37,8 @@ int mydump(char ** args);
 
 int mylof(char ** args);
 
+int fin(void);
+
 /* ls, grep, etc */
 int generic_fun(char** args);
 

@@ -29,8 +29,14 @@ int main(int argc, char** argv)
 	char *home = getenv("HOME");
 	int status = 1;
 
+	int farce = 0;
+
 	if (argc > 1 && strcmp(argv[1], "--debug") == 0) {
 		debug = 1;
+	}
+
+	if (argc > 1 && strcmp(argv[1], "--farce") == 0) {
+		farce = 1;
 	}
 
 	char* user = getenv("USER"),
@@ -53,12 +59,24 @@ int main(int argc, char** argv)
 			strcpy(showPath, path);
 		}
 		char message[2048];
-		if (errno){
-			snprintf(message, sizeof(message), "\033[31m➜ %s\033[m\033[34m%s\033[m > ", computer_name, showPath);
+
+		if (farce){
+			if (errno){
+				snprintf(message, sizeof(message), "\033[91m➜ \033[1m\033[96m%s\033[93m ✗ \033[m", showPath);
+			}
+			else{
+				snprintf(message, sizeof(message), "\033[92m➜ \033[1m\033[96m%s\033[93m ✗ \033[m", showPath);
+			}
 		}
 		else{
-			snprintf(message, sizeof(message), "\033[32m➜ \033[m\033[31m%s\033[m\033[34m%s\033[m > ", computer_name, showPath);
+			if (errno){
+				snprintf(message, sizeof(message), "\033[91m➜ \033[91m%s\e[38;5;75m%s\033[m > ", computer_name, showPath);
+			}
+			else{
+				snprintf(message, sizeof(message), "\033[92m➜ \033[91m%s\e[38;5;75m%s\033[m > ", computer_name, showPath);
+			}
 		}
+		
 		if (!isatty(STDIN_FILENO)) {
 			printf("%s",message);
 			fflush(stdout);

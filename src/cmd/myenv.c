@@ -4,6 +4,11 @@
 
 int myenv(char **args)
 {
+	if (args[1] == NULL || strcmp("-p",args[1]) != 0 || args[2] == NULL){
+        printf("Usage: myenv -p <PID>\n");
+        return EINVAL;
+    }
+
 	if (args[1] != NULL && strcmp("-p",args[1]) == 0){
 		char *pid = args[2];
 		char path[200];

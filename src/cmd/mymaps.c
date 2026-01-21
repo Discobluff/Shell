@@ -5,12 +5,12 @@
 
 int mymaps(char **args){
 	if(args[1]==NULL){
-		fprintf(stderr, "Usage: mymaps -p <PID>\n");
+		printf("Usage: mymaps -p <PID>\n");
 		return EINVAL;
 	}
 
-	if(!strcmp("-p",args[1]) == 0){
-		fprintf(stderr, "Usage: mymaps -p <PID>\n");
+	if(!strcmp("-p",args[1]) == 0 || args[2]==NULL){
+		printf("Usage: mymaps -p <PID>\n");
 		return EINVAL;
 	}
 
@@ -21,7 +21,7 @@ int mymaps(char **args){
 
 	FILE *file = fopen(path, "r");
 	if (file == NULL) {
-		perror("Error opening file");
+		printf("Error opening file");
 		return EFAULT;
 	}
 
@@ -36,7 +36,7 @@ int mymaps(char **args){
 		
 		int fields = sscanf(buffer, "%s %s %s %s %ld %s", address, perms, offset, dev, &inode, pathname);
 		if(fields < 5){
-			fprintf(stderr, "Error parsing line: %s", buffer);
+			printf("Error parsing line: %s", buffer);
 			// EINTR 	Interrupted function.
 			return EINTR;
 		}

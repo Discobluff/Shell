@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <fcntl.h>
+#include <errno.h>     /* for errno */
 #define BUFF_SIZE _SC_PAGE_SIZE
 
 // mydump -p <PID> --start 0x... --end 0x... -o fichier
@@ -14,27 +15,34 @@
 int mydump(char **args){
     if (args[1] ==NULL || strcmp("--help",args[1]) == 0 || strcmp("-h",args[1]) == 0){
         printf("Usage: mydump -p <PID> --start 0x... --end 0x... -o <output_file>\n");
-        return 0;
+        return EINVAL;
     }
 
+    if (args[1] ==NULL || strcmp("-p",args[1]) != 0){
+        printf("Usage: mydump -p <PID> --start 0x... --end 0x... -o <output_file>\n");
+        return EINVAL;
+    }
+
+    if (args[4]==NULL)
+    {
+        printf("Usage: mydump -p <PID> --start 0x... --end 0x... -o <output_file>\n");
+        return EINVAL;
+    }
+    
+    if (args[3] == NULL || strcmp("--start",args[3]) != 0){
+        printf("Usage: mydump -p <PID> --start 0x... --end 0x... -o <output_file>\n");
+        return EINVAL;
+    }
+    if (args[5] == NULL || strcmp("--end",args[5]) != 0){
+        printf("Usage: mydump -p <PID> --start 0x... --end 0x... -o <output_file>\n");
+        return EINVAL;
+    }
+    if (args[7] == NULL ||  strcmp("-o",args[7]) != 0){
+        printf("Usage: mydump -p <PID> --start 0x... --end 0x... -o <output_file>\n");
+        return EINVAL;
+    }
     printf("Starting dump process...\n");
-    if (strcmp("-p",args[1]) != 0){
-        perror("Error opening file");
-        return 1;
-    }
 
-    if (strcmp("--start",args[3]) != 0){
-        perror("Error opening file");
-        return 1;
-    }
-    if (strcmp("--end",args[5]) != 0){
-        perror("Error opening file");
-        return 1;
-    }
-    if (strcmp("-o",args[7]) != 0){
-        perror("Error opening file");
-        return 1;
-    }
     char* pid_str= args[2];
     pid_t pid= atoi(pid_str);
     long start= strtol(args[4], NULL, 16);
@@ -48,32 +56,32 @@ int mydump(char **args){
     int mem_fd = open(path, O_RDONLY);
     if (mem_fd == -1) {
         // may need root privileges
-        perror("Error opening mem file");
-        return 1;
+        printf("Needed privileges to open memory file");
+        return EPERM;
     }
 
     int out_fd = open(output_path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if (out_fd == -1) {
-        perror("Error opening output file");
+        printf("Error opening output file");
         close(mem_fd);
-        return 1;
+        return EBADF;
     }
 
     if (ptrace(PTRACE_ATTACH, pid, NULL, NULL) == -1) {
-        perror("ptrace attach failed");
+        printf("ptrace attach failed");
         close(mem_fd);
         close(out_fd);
-        return 1;
+        return EINTR;
     }
 
     waitpid(pid, NULL, 0);
 
     if (lseek(mem_fd, start, SEEK_SET) == -1) {
-        perror("lseek failed");
+        printf("lseek failed");
         ptrace(PTRACE_DETACH, pid, NULL, NULL);
         close(mem_fd);
         close(out_fd);
-        return 1;
+        return EIO;
     }
 
     //BUFF_SIZE defined as system page size (why not)
@@ -91,19 +99,19 @@ int mydump(char **args){
         ssize_t bytes_read = read(mem_fd, buf, chunk_size);
         
         if (bytes_read <= 0) {
-            perror("Read error or End of File encountered prematurely");
+            printf("Read error or End of File encountered prematurely");
             ptrace(PTRACE_DETACH, pid, NULL, NULL);
             close(mem_fd);
             close(out_fd);
-            return 1;
+            return EIO;
         }
 
         if (write(out_fd, buf, bytes_read) != bytes_read) {
-            perror("Write failed");
+            printf("Write failed");
             ptrace(PTRACE_DETACH, pid, NULL, NULL);
             close(mem_fd);
             close(out_fd);
-            return 1;
+            return EIO;
         }
 
         bytes_processed += bytes_read;

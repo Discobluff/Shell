@@ -70,7 +70,7 @@ int mymaps(char **args){
 			suspicion = true;
 		}
 		// named VM regions with read and execute permissions-> only [vdso] is allowed
-		if(!strlen(pathname) == 0 && strchr(perms, '[') != NULL &&strchr(perms, ']') != NULL && strchr(perms, 'x') != NULL && strstr(pathname, "[vdso]") == NULL){
+		if(strlen(pathname) != 0 && strchr(pathname, '[') != NULL && strchr(pathname, ']') != NULL && strchr(perms, 'x') != NULL&& strchr(perms, 'r') != NULL && strstr(pathname, "[vdso]") == NULL){
 			//VM regions with write and execute permissions
 			suspicion = true;
 		}

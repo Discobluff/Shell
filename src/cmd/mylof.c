@@ -20,8 +20,8 @@ int test_dev_pts(char* path){
 int mylof(char **args)
 {
     if (args[1] == NULL || strcmp("-p",args[1]) != 0 || args[2] == NULL){
-        perror("Usage: mylof -p <PID>");
-        return 1;
+        printf("Usage: mylof -p <PID>\n");
+        return EINVAL;
     }
     
 
@@ -38,8 +38,8 @@ int mylof(char **args)
     fdir = opendir(path);
     if (fdir == NULL)
     {
-        fprintf(stderr, "Error : Failed to open target directory - %s\n", strerror(errno));
-        return 1;
+        printf("Error : Failed to open target directory - %s\n", strerror(errno));
+        return EBADF;
     }
 
     /* Reading object (files, directories ...) from the folder) */

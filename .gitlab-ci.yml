@@ -68,10 +68,30 @@ myarp:
   variables:
     CMD: "myarp"
 
+myinfo:
+  extends: .template_generic
+  variables:
+    CMD: "myinfo"
+
 myenv:
   extends: .template_custom_with_args
   variables:
     CMD: "myenv -p 1"
+
+mymaps:
+  extends: .template_custom_with_args
+  variables:
+    CMD: "mymaps -p 1"
+
+myloft:
+  extends: .template_custom_with_args
+  variables:
+    CMD: "myloft -p 1"
+
+mydump:
+  extends: .template_custom_with_args
+  variables:
+    CMD: "mydump -p 1 --start 0x55f65d797000 --end 0x55f65d886000 -o fichier_dump.bin"
 
 .template_generic:
   stage: tests_generic

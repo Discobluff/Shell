@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <errno.h>
 
 #define BUFF 256
 #define N 4
@@ -39,13 +40,13 @@ int myinfo(void)
     for (int i = 0; i < N; i++) {
         FILE *fd = fopen(f_add[i], "r");
         if (fd == NULL) {
-            perror(f_add[i]);
-            return -1;
+            printf("Error opening file %s\n", f_add[i]);
+            return EBADF;
         }
         if (fgets(var[i], BUFF, fd) == NULL) {
-            perror("fgets");
+            printf("Error reading from file %s\n", f_add[i]);
             fclose(fd);
-            return -1;
+            return EFAULT;
         }
         fclose(fd);
         /* strip newline */
@@ -63,8 +64,8 @@ int myinfo(void)
     time(&rawtime);
     timeinfo = localtime(&rawtime);
     if (timeinfo == NULL) {
-        perror("localtime");
-        return -1;
+        printf("Error getting localtime\n");
+        return EFAULT;
     }
     if (strftime(timestr, sizeof(timestr), "%T", timeinfo) == 0) {
         strcpy(timestr, "??:??:??");
@@ -107,7 +108,8 @@ int myinfo(void)
             }
             fclose(lf);
         } else {
-            perror("/proc/loadavg");
+            printf("Error opening file /proc/loadavg\n");
+            return EBADF;
         }
         
     }

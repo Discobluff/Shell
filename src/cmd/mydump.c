@@ -23,16 +23,23 @@ int mydump(char **args){
         return EINVAL;
     }
 
-    if (args[4]==NULL)
+    if (args[2]==NULL )
     {
         printf("Usage: mydump -p <PID> --start 0x... --end 0x... -o <output_file>\n");
         return EINVAL;
     }
-    
+
     if (args[3] == NULL || strcmp("--start",args[3]) != 0){
         printf("Usage: mydump -p <PID> --start 0x... --end 0x... -o <output_file>\n");
         return EINVAL;
     }
+
+    if (args[4]==NULL )
+    {
+        printf("Usage: mydump -p <PID> --start 0x... --end 0x... -o <output_file>\n");
+        return EINVAL;
+    }
+
     if (args[5] == NULL || strcmp("--end",args[5]) != 0){
         printf("Usage: mydump -p <PID> --start 0x... --end 0x... -o <output_file>\n");
         return EINVAL;

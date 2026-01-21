@@ -18,7 +18,7 @@
 int main(int argc, char **argv){
     //print pid and exe path
     printf("PID: %d\n", getpid());
-    printf("Demo Suspicious File\n");
+    printf("Demo3: Suspicious File\n");
 
     // Create in-memory file with custom name
     // In /proc/[pid]/maps, this appears as /memfd:[v_sus0] (deleted)

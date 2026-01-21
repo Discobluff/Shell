@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdbool.h>
+#include "job.h"
 
 typedef struct {
 	enum {with_arg, no_arg} type;
@@ -35,6 +36,8 @@ int mymaps(char** args);
 int mydump(char ** args);
 
 int mylof(char ** args);
+
+int fin(void);
 
 /* ls, grep, etc */
 int generic_fun(char** args);

@@ -1,13 +1,19 @@
+#define _XOPEN_SOURCE 700
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
+#include <string.h>
+#include <unistd.h>
 #include "runner.h"
 #include "parser/parser.h"
 #include <errno.h>
+#include "cmd/cmd.h"
 #include <readline/readline.h>
 #include <readline/history.h>
 
 #define MAX_USER_SIZE 32
 #define MAX_NAME_SIZE 32
+
 
 
 int debug = 0;
@@ -23,14 +29,40 @@ void free_args(char **args){
 
 int main(int argc, char** argv)
 {
+	//JOB CONTROL INIT
+	for (int i = 0; i < MAX_JOBS; i++) {
+	jobs_list[i].pid = -1;
+	jobs_list[i].command = NULL;
+	jobs_list[i].status = -1; // no job running
+	}
+	//handler for SIGCHLD
+	struct sigaction sa;
+	memset(&sa, 0, sizeof(sa));
+	sa.sa_handler = &handle_sigchld;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = SA_RESTART;
+	sigaction(SIGCHLD, &sa, NULL);
+
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
+    signal(SIGTSTP, SIG_IGN);
+    signal(SIGTTIN, SIG_IGN);
+    signal(SIGTTOU, SIG_IGN);
+
 	char* input = NULL;
 	char path[1024];
 	char showPath[1024];
 	char *home = getenv("HOME");
 	int status = 1;
 
+	int farce = 0;
+
 	if (argc > 1 && strcmp(argv[1], "--debug") == 0) {
 		debug = 1;
+	}
+
+	if (argc > 1 && strcmp(argv[1], "--farce") == 0) {
+		farce = 1;
 	}
 
 	char* user = getenv("USER"),
@@ -53,12 +85,24 @@ int main(int argc, char** argv)
 			strcpy(showPath, path);
 		}
 		char message[2048];
-		if (errno){
-			snprintf(message, sizeof(message), "\033[31m➜ %s\033[m\033[34m%s\033[m > ", computer_name, showPath);
+
+		if (farce){
+			if (errno){
+				snprintf(message, sizeof(message), "\033[91m➜ \033[1m\033[96m%s\033[93m ✗ \033[m", showPath);
+			}
+			else{
+				snprintf(message, sizeof(message), "\033[92m➜ \033[1m\033[96m%s\033[93m ✗ \033[m", showPath);
+			}
 		}
 		else{
-			snprintf(message, sizeof(message), "\033[32m➜ \033[m\033[31m%s\033[m\033[34m%s\033[m > ", computer_name, showPath);
+			if (errno){
+				snprintf(message, sizeof(message), "\033[91m➜ \033[91m%s\e[38;5;75m%s\033[m > ", computer_name, showPath);
+			}
+			else{
+				snprintf(message, sizeof(message), "\033[92m➜ \033[91m%s\e[38;5;75m%s\033[m > ", computer_name, showPath);
+			}
 		}
+		
 		if (!isatty(STDIN_FILENO)) {
 			printf("%s",message);
 			fflush(stdout);

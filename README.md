@@ -19,7 +19,7 @@
 
 - Clone the repository
 
-    `git clone https://gibson.telecomnancy.univ-lorraine.fr/projets/2526/Systeme/projet/Projet-systeme-groupe-30.git`
+    `git clone https://github.com/Discobluff/Shell.git`
 
 ## 2. Execution
 
@@ -28,14 +28,14 @@
 ## 3. Demo with Docker
 
 - Require `docker`
-- Pull the docker image
-    `docker pull gibson-registry.telecomnancy.univ-lorraine.fr/projets/2526/systeme/projet/projet-systeme-groupe-30:latest`
 - Clone the repository
-    `git clone https://gibson.telecomnancy.univ-lorraine.fr/projets/2526/Systeme/projet/Projet-systeme-groupe-30.git`
+    `git clone https://github.com/Discobluff/Shell.git`
 - Access to the project folder
     `cd Projet-systeme-groupe-30/`
+- Build the docker image from the Dockerfile 
+    `docker build -t projet-systeme-groupe-30 .`
 - Run the docker image
-    `docker run -it -e USER=demo --mount type=bind,source="$(pwd)",target=/root gibson-registry.telecomnancy.univ-lorraine.fr/projets/2526/systeme/projet/projet-systeme-groupe-30:latest bash`
+    `docker run -it -e USER=demo --mount type=bind,source="$(pwd)",target=/root projet-systeme-groupe-30 bash`
 - Access to the repo
     `cd /root`
 - And you can now use the shell :)
